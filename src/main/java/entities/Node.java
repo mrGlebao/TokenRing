@@ -10,14 +10,14 @@ import java.util.List;
 public class Node extends Thread {
 
     private final int id;
-    private final entities.Operator operator;
+    private final Operator operator;
     private List<Frame> frames = Collections.synchronizedList(new ArrayList<Frame>());
     private Node next;
     private List<Frame> myFrames = new ArrayList<>();
 
     public Node(int i) {
         this.id = i;
-        this.operator = new entities.Operator(i);
+        this.operator = new Operator(i);
     }
 
     @Override
@@ -37,13 +37,13 @@ public class Node extends Thread {
     }
 
     public void sendMessage(Frame frame) {
-            this.next.receiveMessage(frame);
+        this.next.receiveMessage(frame);
     }
 
     /**
      * Получаешь сообщение, сохраняешь
      */
-    public void receiveMessage(Frame frame)  {
+    public void receiveMessage(Frame frame) {
         frames.add(frame);
     }
 
@@ -70,15 +70,15 @@ public class Node extends Thread {
      */
     private void operateFrame(Frame frame) {
         if (frame.isEmptyToken()) {
-            System.out.println("Node "+id+" received empty token");
+            System.out.println("Node " + id + " received empty token");
             if (operator.hasMessageToSend()) {
                 Message mess = operator.getMessage();
-                System.out.println("Operator sent message from "+mess.from()+" to "+mess.to());
+                System.out.println("Operator sent message from " + mess.from() + " to " + mess.to());
                 frame.setMessage(mess);
                 frame.setTokenFlag(false);
                 sendMessage(frame);
             } else {
-                System.out.println("operator "+id+" is silent. Node "+id+" sent empty token");
+                System.out.println("operator " + id + " is silent. Node " + id + " sent empty token");
                 sendMessage(frame);
             }
         } else {
