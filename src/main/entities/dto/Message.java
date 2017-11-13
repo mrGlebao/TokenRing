@@ -1,8 +1,10 @@
+package entities.dto;
+
 public class Message {
 
-    public int from;
-    public int to;
-    public String content;
+    private final int from;
+    private final int to;
+    private final String content;
 
     public Message(int from, int to, String content) {
         this.from = from;
@@ -12,6 +14,14 @@ public class Message {
 
     public String toString() {
         return "<" + content + ">";
+    }
+
+    public int from() {
+        return from;
+    }
+
+    public int to() {
+        return to;
     }
 
 }

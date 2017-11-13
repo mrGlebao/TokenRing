@@ -1,3 +1,5 @@
+package conf;
+
 public class Settings {
 
     public static final int TOPOLOGY_SIZE = 8;

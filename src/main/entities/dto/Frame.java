@@ -1,6 +1,9 @@
+package entities.dto;
+
 public class Frame {
 
     private volatile boolean isToken;
+
     private Message message;
 
     private Frame(boolean isToken) {

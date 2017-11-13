@@ -1,18 +1,23 @@
+package entities;
+
+import entities.dto.Frame;
+import entities.dto.Message;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class Node extends Thread {
 
-    public final int id;
-    private final Operator operator;
-    public List<Frame> frames = Collections.synchronizedList(new ArrayList<Frame>());
+    private final int id;
+    private final entities.Operator operator;
+    private List<Frame> frames = Collections.synchronizedList(new ArrayList<Frame>());
     private Node next;
     private List<Frame> myFrames = new ArrayList<>();
 
     public Node(int i) {
         this.id = i;
-        this.operator = new Operator(i);
+        this.operator = new entities.Operator(i);
     }
 
     @Override
@@ -68,7 +73,7 @@ public class Node extends Thread {
             System.out.println("Node "+id+" received empty token");
             if (operator.hasMessageToSend()) {
                 Message mess = operator.getMessage();
-                System.out.println("Operator sent message from "+mess.from+" to "+mess.to);
+                System.out.println("Operator sent message from "+mess.from()+" to "+mess.to());
                 frame.setMessage(mess);
                 frame.setTokenFlag(false);
                 sendMessage(frame);
@@ -78,11 +83,11 @@ public class Node extends Thread {
             }
         } else {
             Message mess = frame.getMessage();
-            System.out.println(id + " received message " + mess + " from " + mess.from + " to " + mess.to);
-            if (mess.from == id) {
+            System.out.println(id + " received message " + mess + " from " + mess.from() + " to " + mess.to());
+            if (mess.from() == id) {
                 System.out.println("Returned home!");
                 sendMessage(Frame.createToken());
-            } else if (mess.to == id) {
+            } else if (mess.to() == id) {
                 System.out.println("Went to addressee!");
                 myFrames.add(frame);
                 frame.setTokenFlag(false);

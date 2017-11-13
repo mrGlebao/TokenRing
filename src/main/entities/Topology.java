@@ -1,15 +1,20 @@
+package entities;
+
+import conf.Settings;
+import entities.dto.Frame;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Topology {
 
-    List<Node> topology = new ArrayList<>();
+    private List<Node> topology = new ArrayList<>();
 
     public Topology(int num) {
         this.createRingTopology(num);
     }
 
-    public void add(Node node) {
+    private void add(Node node) {
         if (topology.size() > 0) {
             Node t = topology.get(topology.size() - 1);
             t.setNext(node);
@@ -28,7 +33,7 @@ public class Topology {
         for (Node t : topology) {
             t.start();
         }
-        topology.get(3).sendMessage(Frame.createToken());
+        topology.get((int)(Math.random() * (Settings.TOPOLOGY_SIZE-1))).sendMessage(Frame.createToken());
     }
 
     public void stop() {

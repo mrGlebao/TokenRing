@@ -1,3 +1,8 @@
+package entities;
+
+import conf.Settings;
+import entities.dto.Message;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -5,10 +10,10 @@ import java.util.List;
 public class Operator extends Thread {
 
     private List<Message> messagesToSend =  Collections.synchronizedList(new ArrayList<>());
-    public final double verbose;
-    public final int nodeId;
+    private final double verbose;
+    private final int nodeId;
 
-    public Operator(int nodeId) {
+    Operator(int nodeId) {
         this.nodeId = nodeId;
         this.verbose = Settings.VERBOSE_DEFAULT;
     }
@@ -32,11 +37,11 @@ public class Operator extends Thread {
         messagesToSend.add(new Message(nodeId, to, message));
     }
 
-    public synchronized boolean hasMessageToSend() {
+    synchronized boolean hasMessageToSend() {
         return !messagesToSend.isEmpty();
     }
 
-    public synchronized Message getMessage() {
+    synchronized Message getMessage() {
         return messagesToSend.remove(0);
     }
 
