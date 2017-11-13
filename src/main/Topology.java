@@ -1,9 +1,8 @@
-package main;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class Topology {
+
     List<Node> topology = new ArrayList<>();
 
     public Topology(int num) {

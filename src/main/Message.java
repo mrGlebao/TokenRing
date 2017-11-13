@@ -1,6 +1,5 @@
-package main;
-
 public class Message {
+
     public int from;
     public int to;
     public String content;
@@ -12,7 +11,7 @@ public class Message {
     }
 
     public String toString() {
-        return "<"+content+">";
+        return "<" + content + ">";
     }
 
 }

@@ -1,5 +1,3 @@
-package main;
-
 public class Frame {
 
     private volatile boolean isToken;
