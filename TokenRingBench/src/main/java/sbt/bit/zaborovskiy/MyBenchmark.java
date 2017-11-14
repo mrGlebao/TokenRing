@@ -31,14 +31,31 @@
 
 package sbt.bit.zaborovskiy;
 
+import conf.Settings;
+import entities.Topology;
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.runner.Runner;
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.Options;
+import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 public class MyBenchmark {
 
     @Benchmark
-    public void testMethod() {
-        // This is a demo/sample template for building your JMH benchmarks. Edit as needed.
-        // Put your benchmark code here.
+    public void testMethod() throws InterruptedException {
+        Topology top = new Topology(Settings.TOPOLOGY_SIZE);
+        top.start();
+        Thread.sleep(Settings.MAIN_SLEEP_DEFAULT);
+        top.stop();
+    }
+
+    public static void main(String[] args) throws RunnerException {
+        Options opt = new OptionsBuilder()
+                .include(MyBenchmark.class.getSimpleName())
+                .forks(1)
+                .build();
+
+        new Runner(opt).run();
     }
 
 }
