@@ -33,29 +33,57 @@ package sbt.bit.zaborovskiy;
 
 import conf.Settings;
 import entities.Topology;
-import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
+import java.util.concurrent.TimeUnit;
+
+@State(Scope.Thread)
 public class MyBenchmark {
 
+    public Topology t;
+
+    @Setup(Level.Iteration)
+    public void prepareFreshTopology() {
+        t = new Topology(Settings.TOPOLOGY_SIZE);
+        t.start();
+    }
+
+    @TearDown(Level.Iteration)
+    public void stopTopology() throws InterruptedException {
+        t.stop();
+    }
+
     @Benchmark
-    public void testMethod() throws InterruptedException {
-        Topology top = new Topology(Settings.TOPOLOGY_SIZE);
-        top.start();
-        Thread.sleep(Settings.MAIN_SLEEP_DEFAULT);
-        top.stop();
+    @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Warmup(iterations = 6)
+    public void oneToken() throws InterruptedException {
+        t.setTokenTo(1);
+    }
+
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Warmup(iterations = 6)
+    public void twoTokens() throws InterruptedException {
+        t.setTokenTo(1);
+        t.setTokenTo(Settings.TOPOLOGY_SIZE / 2);
     }
 
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(MyBenchmark.class.getSimpleName())
+                .warmupIterations(3)
+                .measurementIterations(3)
+                .threads(1)
                 .forks(1)
                 .build();
 
-        new Runner(opt).runSingle();
+        new Runner(opt).run();
     }
 
 }

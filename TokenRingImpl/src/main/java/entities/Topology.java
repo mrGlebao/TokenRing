@@ -1,7 +1,7 @@
 package entities;
 
-import conf.Settings;
 import entities.dto.Frame;
+import throwables.UnexpectedAddresseeException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,23 @@ public class Topology {
         for (Node t : topology) {
             t.start();
         }
-        topology.get((int)(Math.random() * (Settings.TOPOLOGY_SIZE-1))).sendMessage(Frame.createToken());
+
+    }
+
+    public void setTokenTo(int i) {
+        if (i > topology.size() - 1) {
+            try {
+                throw new UnexpectedAddresseeException(i);
+            } catch (UnexpectedAddresseeException e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+        topology.get(i).sendMessage(Frame.createToken());
+    }
+
+    public void setTokenToRandom() {
+        setTokenTo((int) (Math.random() * (topology.size() - 1)));
     }
 
     public void stop() {
