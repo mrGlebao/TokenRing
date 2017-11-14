@@ -48,7 +48,7 @@ public class MyBenchmark {
 
     @Setup(Level.Iteration)
     public void prepareFreshTopology() {
-        t = new Topology(Settings.TOPOLOGY_SIZE);
+        t = Topology.createRing(Settings.TOPOLOGY_SIZE);
         t.start();
     }
 
@@ -62,7 +62,7 @@ public class MyBenchmark {
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Warmup(iterations = 6)
     public void oneToken() throws InterruptedException {
-        t.setTokenTo(1);
+        t.askOperator().sendTokenTo(3);
     }
 
     @Benchmark
@@ -70,8 +70,8 @@ public class MyBenchmark {
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Warmup(iterations = 6)
     public void twoTokens() throws InterruptedException {
-        t.setTokenTo(1);
-        t.setTokenTo(Settings.TOPOLOGY_SIZE / 2);
+        t.askOperator().sendTokenTo(3);
+        t.askOperator().sendTokenTo(Settings.TOPOLOGY_SIZE / 2);
     }
 
     public static void main(String[] args) throws RunnerException {

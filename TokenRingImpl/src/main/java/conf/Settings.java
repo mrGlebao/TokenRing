@@ -6,6 +6,6 @@ public class Settings {
     public static final double VERBOSE_DEFAULT = 0.3;
     public static final int MAIN_SLEEP_DEFAULT = 400;
     public static final int OPERATOR_SLEEP_DEFAULT = 10_000;
-    public static final boolean SILENT_MODE = true;
+    public static final boolean SILENT_MODE = false;
 
 }
