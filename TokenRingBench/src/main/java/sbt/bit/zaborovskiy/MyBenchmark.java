@@ -55,7 +55,7 @@ public class MyBenchmark {
                 .forks(1)
                 .build();
 
-        new Runner(opt).run();
+        new Runner(opt).runSingle();
     }
 
 }

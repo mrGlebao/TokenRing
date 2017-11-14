@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static utils.Utils.log;
+
 public class Node extends Thread {
 
     private final int id;
@@ -70,30 +72,30 @@ public class Node extends Thread {
      */
     private void operateFrame(Frame frame) {
         if (frame.isEmptyToken()) {
-            System.out.println("Node " + id + " received empty token");
+            log("Node " + id + " received empty token");
             if (operator.hasMessageToSend()) {
                 Message mess = operator.getMessage();
-                System.out.println("Operator sent message from " + mess.from() + " to " + mess.to());
+                log("Operator sent message from " + mess.from() + " to " + mess.to());
                 frame.setMessage(mess);
                 frame.setTokenFlag(false);
                 sendMessage(frame);
             } else {
-                System.out.println("operator " + id + " is silent. Node " + id + " sent empty token");
+                log("operator " + id + " is silent. Node " + id + " sent empty token");
                 sendMessage(frame);
             }
         } else {
             Message mess = frame.getMessage();
-            System.out.println(id + " received message " + mess + " from " + mess.from() + " to " + mess.to());
+            log(id + " received message " + mess + " from " + mess.from() + " to " + mess.to());
             if (mess.from() == id) {
-                System.out.println("Returned home!");
+                log("Returned home!");
                 sendMessage(Frame.createToken());
             } else if (mess.to() == id) {
-                System.out.println("Went to addressee!");
+                log("Went to addressee!");
                 myFrames.add(frame);
                 frame.setTokenFlag(false);
                 sendMessage(frame);
             } else {
-                System.out.println("Not mine!");
+                log("Not mine!");
                 sendMessage(frame);
             }
 

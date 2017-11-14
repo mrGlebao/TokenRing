@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static utils.Utils.log;
+
 public class Operator extends Thread {
 
     private List<Message> messagesToSend =  Collections.synchronizedList(new ArrayList<>());
@@ -49,7 +51,7 @@ public class Operator extends Thread {
     public void run() {
         while(!isInterrupted()) {
             if (this.verbose > Math.random()) {
-                System.out.println("Operator ID" + nodeId +" GENERATES MESSAGE!");
+                log("Operator ID" + nodeId +" GENERATES MESSAGE!");
                 prepareMessage();
             }
             try {
