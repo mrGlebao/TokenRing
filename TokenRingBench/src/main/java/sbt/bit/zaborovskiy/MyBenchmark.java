@@ -47,7 +47,7 @@ public class MyBenchmark {
     public Topology t;
 
     @Setup(Level.Iteration)
-    public void prepareFreshTopology() {
+    public void prepareFreshTopology() throws InterruptedException {
         t = Topology.createRing(Settings.TOPOLOGY_SIZE);
         t.start();
     }
@@ -63,6 +63,7 @@ public class MyBenchmark {
     @Warmup(iterations = 6)
     public void oneToken() throws InterruptedException {
         t.askOperator().sendTokenTo(3);
+        Thread.sleep(Settings.MAIN_SLEEP_DEFAULT);
     }
 
     @Benchmark
@@ -72,6 +73,7 @@ public class MyBenchmark {
     public void twoTokens() throws InterruptedException {
         t.askOperator().sendTokenTo(3);
         t.askOperator().sendTokenTo(Settings.TOPOLOGY_SIZE / 2);
+        Thread.sleep(Settings.MAIN_SLEEP_DEFAULT);
     }
 
     public static void main(String[] args) throws RunnerException {
@@ -79,7 +81,7 @@ public class MyBenchmark {
                 .include(MyBenchmark.class.getSimpleName())
                 .warmupIterations(3)
                 .measurementIterations(3)
-                .threads(1)
+                .threads(20)
                 .forks(1)
                 .build();
 

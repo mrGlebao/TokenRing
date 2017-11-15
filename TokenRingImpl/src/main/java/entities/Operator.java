@@ -2,25 +2,23 @@ package entities;
 
 import conf.Settings;
 import entities.dto.Message;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static utils.Utils.log;
 
 public class Operator extends Thread {
 
-    private List<Message> messagesToSend =  Collections.synchronizedList(new ArrayList<>());
+    private final Queue<Message> messagesToSend;
     private final double verbose;
     private final int nodeId;
 
     Operator(int nodeId) {
-        this.nodeId = nodeId;
-        this.verbose = Settings.VERBOSE_DEFAULT;
+        this(Settings.VERBOSE_DEFAULT, nodeId);
     }
 
-    public Operator(double verbose, int nodeId) {
+    private Operator(double verbose, int nodeId) {
+        this.messagesToSend  = new ConcurrentLinkedQueue<>();
         this.verbose = verbose;
         this.nodeId = nodeId;
     }
@@ -44,7 +42,7 @@ public class Operator extends Thread {
     }
 
     synchronized Message getMessage() {
-        return messagesToSend.remove(0);
+        return messagesToSend.poll();
     }
 
     @Override
