@@ -69,12 +69,14 @@ public class Node extends Thread {
     private void operateEmptyToken(Frame frame) {
         log("Node " + id + " received empty token");
         if (operator.hasMessageToSend()) {
+            // Prepare message and send
             Message mess = operator.getMessage();
             log("Operator sent message from " + mess.from() + " to " + mess.to());
             frame.setMessage(mess);
             frame.setTokenFlag(false);
             sendMessage(frame);
         } else {
+            // Just push token forward
             log("operator " + id + " is silent. Node " + id + " sent empty token");
             sendMessage(frame);
         }
@@ -84,14 +86,17 @@ public class Node extends Thread {
         Message mess = frame.getMessage();
         log(id + " received message " + mess + " from " + mess.from() + " to " + mess.to());
         if (mess.from() == id) {
+            // Send empty token instead
             log("Returned home!");
             sendMessage(Frame.createToken());
         } else if (mess.to() == id) {
+            // Collect message
             log("Went to addressee!");
             myFrames.add(frame);
             frame.setTokenFlag(false);
             sendMessage(frame);
         } else {
+            // Just push message forward
             log("Not mine!");
             sendMessage(frame);
         }
