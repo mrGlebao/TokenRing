@@ -102,5 +102,10 @@ public class Node extends Thread {
         }
     }
 
+    @Override
+    public String toString() {
+        return "Node<id=" + id + ">";
+    }
+
 }
 
