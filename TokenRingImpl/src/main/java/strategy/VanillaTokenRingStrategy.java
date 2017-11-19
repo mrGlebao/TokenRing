@@ -16,7 +16,7 @@ public class VanillaTokenRingStrategy extends AbstractNodeStrategy {
     }
 
     @Override
-    public void operateEmptyToken(Frame frame) {
+    void operateEmptyToken(Frame frame) {
         Operator op = node.getOperator();
         log("Node " + node.getNodeId() + " received empty token");
         if (op.hasMessageToSend()) {
@@ -34,7 +34,7 @@ public class VanillaTokenRingStrategy extends AbstractNodeStrategy {
     }
 
     @Override
-    public void operateForeignMessage(Frame frame) {
+    void operateForeignMessage(Frame frame) {
         Message mess = frame.getMessage();
         log(node.getNodeId() + " received message " + mess + " from " + mess.from() + " to " + mess.to());
         if (mess.from() == node.getNodeId()) {

@@ -8,9 +8,9 @@ import entities.dto.Frame;
  */
 public abstract class AbstractNodeStrategy implements Strategy {
 
-    public abstract void operateEmptyToken(Frame frame);
+    abstract void operateEmptyToken(Frame frame);
 
-    public abstract void operateForeignMessage(Frame frame);
+    abstract void operateForeignMessage(Frame frame);
 
     @Override
     public final void apply(Frame frame) {
