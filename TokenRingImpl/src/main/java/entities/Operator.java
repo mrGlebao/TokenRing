@@ -37,12 +37,16 @@ public class Operator extends Thread {
         messagesToSend.add(new Message(nodeId, to, message));
     }
 
-    synchronized boolean hasMessageToSend() {
+    public synchronized boolean hasMessageToSend() {
         return !messagesToSend.isEmpty();
     }
 
-    synchronized Message getMessage() {
+    public synchronized Message getMessage() {
         return messagesToSend.poll();
+    }
+
+    public int getOperatorId() {
+        return this.nodeId;
     }
 
     @Override

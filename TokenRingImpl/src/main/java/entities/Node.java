@@ -1,14 +1,13 @@
 package entities;
 
 import entities.dto.Frame;
-import entities.dto.Message;
+import strategy.Strategy;
+import strategy.VanillaTokenRingStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import static utils.Utils.log;
 
 public class Node extends Thread {
 
@@ -17,11 +16,13 @@ public class Node extends Thread {
     private final Queue<Frame> frames;
     private Node next;
     private List<Frame> myFrames = new ArrayList<>();
+    private Strategy strategy;
 
     Node(int i) {
         this.frames = new ConcurrentLinkedQueue<>();
         this.id = i;
         this.operator = new Operator(i);
+        this.strategy = new VanillaTokenRingStrategy(this);
     }
 
     @Override
@@ -40,7 +41,7 @@ public class Node extends Thread {
         this.next = node;
     }
 
-    void sendMessage(Frame frame) {
+    public void sendMessage(Frame frame) {
         this.next.receiveMessage(frame);
     }
 
@@ -53,53 +54,17 @@ public class Node extends Thread {
         while (!isInterrupted()) {
             if (!frames.isEmpty()) {
                 Frame frame = frames.poll();
-                operateFrame(frame);
+                strategy.apply(frame);
             }
         }
     }
 
-    private void operateFrame(Frame frame) {
-        if (frame.isEmptyToken()) {
-            operateEmptyToken(frame);
-        } else {
-            operateForeignMessage(frame);
-        }
+    public Operator getOperator() {
+        return this.operator;
     }
 
-    private void operateEmptyToken(Frame frame) {
-        log("Node " + id + " received empty token");
-        if (operator.hasMessageToSend()) {
-            // Prepare message and send
-            Message mess = operator.getMessage();
-            log("Operator sent message from " + mess.from() + " to " + mess.to());
-            frame.setMessage(mess);
-            frame.setTokenFlag(false);
-            sendMessage(frame);
-        } else {
-            // Just push token forward
-            log("operator " + id + " is silent. Node " + id + " sent empty token");
-            sendMessage(frame);
-        }
-    }
-
-    private void operateForeignMessage(Frame frame) {
-        Message mess = frame.getMessage();
-        log(id + " received message " + mess + " from " + mess.from() + " to " + mess.to());
-        if (mess.from() == id) {
-            // Send empty token instead
-            log("Returned home!");
-            sendMessage(Frame.createToken());
-        } else if (mess.to() == id) {
-            // Collect message
-            log("Went to addressee!");
-            myFrames.add(frame);
-            frame.setTokenFlag(false);
-            sendMessage(frame);
-        } else {
-            // Just push message forward
-            log("Not mine!");
-            sendMessage(frame);
-        }
+    public void saveMessage(Frame frame) {
+        myFrames.add(frame);
     }
 
     @Override
@@ -107,5 +72,8 @@ public class Node extends Thread {
         return "Node<id=" + id + ">";
     }
 
+    public int getNodeId() {
+        return id;
+    }
 }
 
