@@ -1,5 +1,6 @@
-import entities.Topology;
 import conf.Settings;
+import entities.ReceivedMessagesOverseer;
+import entities.Topology;
 
 public class Main {
 
@@ -7,7 +8,9 @@ public class Main {
         Topology top = Topology.createRing(Settings.TOPOLOGY_SIZE);
         top.start();
         top.askOperator().sendTokenTo(Settings.TOPOLOGY_SIZE / 2);
-        Thread.sleep(Settings.MAIN_SLEEP_DEFAULT);
+        while (Settings.MESSAGES_TO_RECEIVE >= ReceivedMessagesOverseer.numberOfMessagesReceived()) {
+        }
+        ReceivedMessagesOverseer.printAllReceivedMessages();
         top.stop();
     }
 }

@@ -32,13 +32,17 @@
 package sbt.bit.zaborovskiy;
 
 import conf.Settings;
+import entities.ReceivedMessagesOverseer;
 import entities.Topology;
 import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.results.format.ResultFormatType;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
+import org.openjdk.jmh.runner.options.TimeValue;
 
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 @State(Scope.Thread)
@@ -63,7 +67,9 @@ public class MyBenchmark {
     @Warmup(iterations = 6)
     public void oneToken() throws InterruptedException {
         t.askOperator().sendTokenTo(3);
-        Thread.sleep(Settings.MAIN_SLEEP_DEFAULT);
+        while(Settings.MESSAGES_TO_RECEIVE > ReceivedMessagesOverseer.numberOfMessagesReceived()) {
+        }
+        //ReceivedMessagesOverseer.printAllReceivedMessages();
     }
 
     @Benchmark
@@ -73,16 +79,21 @@ public class MyBenchmark {
     public void twoTokens() throws InterruptedException {
         t.askOperator().sendTokenTo(3);
         t.askOperator().sendTokenTo(Settings.TOPOLOGY_SIZE / 2);
-        Thread.sleep(Settings.MAIN_SLEEP_DEFAULT);
+        while(Settings.MESSAGES_TO_RECEIVE > ReceivedMessagesOverseer.numberOfMessagesReceived()) {
+        }
+        //ReceivedMessagesOverseer.printAllReceivedMessages();
     }
 
     public static void main(String[] args) throws RunnerException {
+
         Options opt = new OptionsBuilder()
                 .include(MyBenchmark.class.getSimpleName())
                 .warmupIterations(3)
                 .measurementIterations(3)
                 .threads(20)
                 .forks(1)
+                .resultFormat(ResultFormatType.TEXT)
+                .result("result.txt")
                 .build();
 
         new Runner(opt).run();

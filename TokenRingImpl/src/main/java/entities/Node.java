@@ -23,6 +23,7 @@ public class Node extends Thread {
         this.id = i;
         this.operator = new Operator(i);
         this.strategy = new VanillaTokenRingStrategy(this);
+        ReceivedMessagesOverseer.register(this);
     }
 
     @Override
@@ -65,6 +66,14 @@ public class Node extends Thread {
 
     public void saveMessage(Frame frame) {
         myFrames.add(frame);
+    }
+
+    public synchronized int numberOfReceivedFrames() {
+        return myFrames.size();
+    }
+
+    public void printReceivedMessages() {
+        myFrames.stream().map(Frame::getMessage).forEach(System.out::println);
     }
 
     @Override
