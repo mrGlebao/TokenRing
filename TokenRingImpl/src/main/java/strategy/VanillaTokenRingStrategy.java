@@ -9,48 +9,34 @@ import static utils.Utils.log;
 
 public class VanillaTokenRingStrategy extends AbstractNodeStrategy {
 
-    private final Node node;
-
     public VanillaTokenRingStrategy(Node node) {
-        this.node = node;
+        super(node);
     }
 
     @Override
-    void operateEmptyToken(Frame frame) {
+    void sendNewMessage(Frame frame) {
         Operator op = node.getOperator();
-        log("Node " + node.getNodeId() + " received empty token");
-        if (op.hasMessageToSend()) {
-            // Prepare message and send
-            Message mess = op.getMessage();
-            log("Operator sent message from " + mess.from() + " to " + mess.to());
-            frame.setMessage(mess);
-            frame.setTokenFlag(false);
-            node.sendMessage(frame);
-        } else {
-            // Just push token forward
-            log("operator " + op.getOperatorId() + " is silent. Node " + node.getNodeId() + " sent empty token");
-            node.sendMessage(frame);
-        }
+        Message mess = op.getMessage();
+        log("Operator "+op.getOperatorId()+" sent message from " + mess.from() + " to " + mess.to());
+        frame.setMessage(mess);
+        frame.setTokenFlag(false);
+        node.sendMessage(frame);
     }
 
     @Override
-    void operateForeignMessage(Frame frame) {
-        Message mess = frame.getMessage();
-        log(node.getNodeId() + " received message " + mess + " from " + mess.from() + " to " + mess.to());
-        if (mess.from() == node.getNodeId()) {
-            // Send empty token instead
-            log("Returned home!");
-            node.sendMessage(Frame.createToken());
-        } else if (mess.to() == node.getNodeId()) {
-            // Collect message
-            log("Went to addressee!");
-            node.saveMessage(frame);
-            frame.setTokenFlag(false);
-            node.sendMessage(frame);
-        } else {
-            // Just push message forward
-            log("Not mine!");
-            node.sendMessage(frame);
-        }
+    void frameHasReachedSender(Frame frame) {
+        // Send empty token instead
+        log("Returned home!");
+        node.sendMessage(Frame.createToken());
     }
+
+    @Override
+    void frameHasReachedAddressee(Frame frame) {
+    // Collect message
+        log("Went to addressee!");
+        node.saveMessage(frame);
+        frame.setTokenFlag(false);
+        node.sendMessage(frame);
+    }
+
 }
