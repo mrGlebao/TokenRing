@@ -13,7 +13,7 @@ public class Message {
     }
 
     public String toString() {
-        return "<" + content + ">";
+        return "Message<" + content + ">";
     }
 
     public int from() {

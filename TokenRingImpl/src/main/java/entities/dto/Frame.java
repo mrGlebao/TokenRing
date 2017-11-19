@@ -35,4 +35,9 @@ public class Frame {
         this.message = message;
     }
 
+    @Override
+    public String toString() {
+        return "Frame<" + message + ", isToken = " + isToken + ">";
+    }
+
 }
