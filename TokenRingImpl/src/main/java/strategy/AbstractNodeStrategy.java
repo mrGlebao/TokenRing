@@ -1,5 +1,6 @@
 package strategy;
 
+import entities.MessagesOverseer;
 import entities.Node;
 import entities.Operator;
 import entities.dto.Frame;
@@ -23,7 +24,7 @@ public abstract class AbstractNodeStrategy implements Strategy {
         Operator op = node.getOperator();
         log("Node " + node.getNodeId() + " received empty token");
         if (op.hasMessageToSend()) {
-            sendNewMessage(frame);
+            sendNewMessageTemplate(frame);
         } else {
             pushTokenForward(frame);
         }
@@ -39,9 +40,9 @@ public abstract class AbstractNodeStrategy implements Strategy {
         Message mess = frame.getMessage();
         log(node.getNodeId() + " received message " + mess );
         if (mess.from() == node.getNodeId()) {
-            frameHasReachedSender(frame);
+            frameHasReachedSenderTemplate(frame);
         } else if (mess.to() == node.getNodeId()) {
-            frameHasReachedAddressee(frame);
+            frameHasReachedAddresseeTemplate(frame);
         } else {
             frameHasReachedUsualNode(frame);
         }
@@ -63,10 +64,27 @@ public abstract class AbstractNodeStrategy implements Strategy {
         }
     }
 
-    abstract void frameHasReachedSender(Frame frame);
+    private void frameHasReachedSenderTemplate(Frame frame) {
+        // Send empty token instead
+        log("Returned home!");
+        frameHasReachedSender(frame);
+    }
 
-    abstract void frameHasReachedAddressee(Frame frame);
+    protected abstract void frameHasReachedSender(Frame frame);
 
-    abstract void sendNewMessage(Frame frame);
+    private void frameHasReachedAddresseeTemplate(Frame frame) {
+        // Collect message
+        log("Went to addressee!");
+        MessagesOverseer.incrementReceived();
+        frameHasReachedAddressee(frame);
+    }
+
+    protected abstract void frameHasReachedAddressee(Frame frame);
+
+    void sendNewMessageTemplate(Frame frame) {
+        sendNewMessage(frame);
+    }
+
+    protected abstract void sendNewMessage(Frame frame);
 
 }

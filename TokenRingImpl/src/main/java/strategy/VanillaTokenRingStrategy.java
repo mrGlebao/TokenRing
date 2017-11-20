@@ -1,5 +1,6 @@
 package strategy;
 
+import entities.MessagesOverseer;
 import entities.Node;
 import entities.Operator;
 import entities.dto.Frame;
@@ -14,26 +15,23 @@ public class VanillaTokenRingStrategy extends AbstractNodeStrategy {
     }
 
     @Override
-    void sendNewMessage(Frame frame) {
+    protected void sendNewMessage(Frame frame) {
         Operator op = node.getOperator();
         Message mess = op.getMessage();
         log("Operator "+op.getOperatorId()+" sent message from " + mess.from() + " to " + mess.to());
         frame.setMessage(mess);
         frame.setTokenFlag(false);
+        MessagesOverseer.incrementSent();
         node.sendMessage(frame);
     }
 
     @Override
-    void frameHasReachedSender(Frame frame) {
-        // Send empty token instead
-        log("Returned home!");
+    protected void frameHasReachedSender(Frame frame) {
         node.sendMessage(Frame.createToken());
     }
 
     @Override
-    void frameHasReachedAddressee(Frame frame) {
-    // Collect message
-        log("Went to addressee!");
+    protected void frameHasReachedAddressee(Frame frame) {
         node.saveMessage(frame);
         frame.setTokenFlag(false);
         node.sendMessage(frame);

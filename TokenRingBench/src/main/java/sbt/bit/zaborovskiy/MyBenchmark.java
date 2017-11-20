@@ -32,7 +32,7 @@
 package sbt.bit.zaborovskiy;
 
 import conf.Settings;
-import entities.ReceivedMessagesOverseer;
+import entities.MessagesOverseer;
 import entities.Topology;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.results.format.ResultFormatType;
@@ -40,9 +40,7 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-import org.openjdk.jmh.runner.options.TimeValue;
 
-import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 @State(Scope.Thread)
@@ -59,38 +57,37 @@ public class MyBenchmark {
     @TearDown(Level.Iteration)
     public void stopTopology() throws InterruptedException {
         t.stop();
+        System.gc();
     }
 
     @Benchmark
     @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
     @OutputTimeUnit(TimeUnit.SECONDS)
-    @Warmup(iterations = 6)
+    //@Warmup(iterations = 6)
     public void oneToken() throws InterruptedException {
         t.askOperator().sendTokenTo(3);
-        while(Settings.MESSAGES_TO_RECEIVE > ReceivedMessagesOverseer.numberOfMessagesReceived()) {
+        while(Settings.MESSAGES_TO_RECEIVE > MessagesOverseer.numberOfMessagesReceived()) {
         }
-        //ReceivedMessagesOverseer.printAllReceivedMessages();
     }
 
     @Benchmark
     @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
     @OutputTimeUnit(TimeUnit.SECONDS)
-    @Warmup(iterations = 6)
+    //@Warmup(iterations = 6)
     public void twoTokens() throws InterruptedException {
         t.askOperator().sendTokenTo(3);
         t.askOperator().sendTokenTo(Settings.TOPOLOGY_SIZE / 2);
-        while(Settings.MESSAGES_TO_RECEIVE > ReceivedMessagesOverseer.numberOfMessagesReceived()) {
+        while(Settings.MESSAGES_TO_RECEIVE > MessagesOverseer.numberOfMessagesReceived()) {
         }
-        //ReceivedMessagesOverseer.printAllReceivedMessages();
     }
 
     public static void main(String[] args) throws RunnerException {
 
         Options opt = new OptionsBuilder()
                 .include(MyBenchmark.class.getSimpleName())
-                .warmupIterations(3)
-                .measurementIterations(3)
-                .threads(20)
+                .warmupIterations(10)
+                .measurementIterations(10)
+                //.threads(20)
                 .forks(1)
                 .resultFormat(ResultFormatType.TEXT)
                 .result("result.txt")

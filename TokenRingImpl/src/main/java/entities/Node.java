@@ -23,7 +23,7 @@ public class Node extends Thread {
         this.id = i;
         this.operator = new Operator(i);
         this.strategy = new VanillaTokenRingStrategy(this);
-        ReceivedMessagesOverseer.register(this);
+        MessagesOverseer.register(this);
     }
 
     @Override
