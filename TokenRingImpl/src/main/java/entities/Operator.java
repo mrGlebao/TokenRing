@@ -2,11 +2,17 @@ package entities;
 
 import conf.Settings;
 import entities.dto.Message;
+
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static utils.Utils.log;
 
+/**
+ * A class which represents the operator - an entity,
+ * which generates messages with random frequency dependent on its verbosity.
+ * Each node has its own operator.
+ */
 public class Operator extends Thread {
 
     private final Queue<Message> messagesToSend;
@@ -18,7 +24,7 @@ public class Operator extends Thread {
     }
 
     private Operator(double verbose, int nodeId) {
-        this.messagesToSend  = new ConcurrentLinkedQueue<>();
+        this.messagesToSend = new ConcurrentLinkedQueue<>();
         this.verbose = verbose;
         this.nodeId = nodeId;
     }
@@ -51,9 +57,9 @@ public class Operator extends Thread {
 
     @Override
     public void run() {
-        while(!isInterrupted()) {
+        while (!isInterrupted()) {
             if (this.verbose > Math.random()) {
-                log("Operator ID" + nodeId +" GENERATES MESSAGE!");
+                log("Operator ID" + nodeId + " GENERATES MESSAGE!");
                 prepareMessage();
             }
             try {

@@ -1,8 +1,13 @@
 package entities.dto;
 
+/**
+ * Classic DTO
+ * Represents a frame.
+ * Due to protocol 1 thread operates 1 frame at a time, so there is no need for explicit synchronization.
+ */
 public class Frame {
 
-    private volatile boolean isToken;
+    private boolean isToken;
 
     private Message message;
 
@@ -14,11 +19,6 @@ public class Frame {
         return new Frame(true);
     }
 
-    public boolean isTokenFlag() {
-        return isToken;
-    }
-
-    // ToDo: setTokenFlagToFalse
     public void setTokenFlag(boolean isToken) {
         this.isToken = isToken;
     }
@@ -34,6 +34,14 @@ public class Frame {
     public void setMessage(Message message) {
         this.message = message;
     }
+
+    public Frame copy() {
+        Frame f = new Frame(this.isToken);
+        Message m = this.getMessage();
+        f.setMessage(new Message(m.from(), m.to(), m.content()));
+        return f;
+    }
+
 
     @Override
     public String toString() {

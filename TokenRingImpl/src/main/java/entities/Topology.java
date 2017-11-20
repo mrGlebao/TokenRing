@@ -1,6 +1,7 @@
 package entities;
 
 import entities.dto.Frame;
+import strategy.StrategyType;
 import throwables.UnexpectedAddresseeException;
 
 import java.util.ArrayList;
@@ -24,6 +25,14 @@ public class Topology {
         Topology top = new Topology();
         for (int i = 0; i < number; i++) {
             top.askRingConstructor().append(new Node(i));
+        }
+        return top;
+    }
+
+    public static Topology createRing(int number, StrategyType strategy) {
+        Topology top = new Topology();
+        for (int i = 0; i < number; i++) {
+            top.askRingConstructor().append(new Node(i, strategy));
         }
         return top;
     }
@@ -56,7 +65,8 @@ public class Topology {
      */
     public class RingConstructor {
 
-        private RingConstructor(){}
+        private RingConstructor() {
+        }
 
         void append(Node node) {
             if (topology.size() > 0) {
@@ -73,7 +83,8 @@ public class Topology {
      */
     public class TopologyOperator {
 
-        private TopologyOperator(){}
+        private TopologyOperator() {
+        }
 
         public void sendTokenTo(int i) {
             if (i > topology.size() - 1) {

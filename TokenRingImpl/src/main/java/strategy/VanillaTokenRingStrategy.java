@@ -8,6 +8,9 @@ import entities.dto.Message;
 
 import static utils.Utils.log;
 
+/**
+ * Default token ring strategy implementation, according to wikipedia.
+ */
 public class VanillaTokenRingStrategy extends AbstractNodeStrategy {
 
     public VanillaTokenRingStrategy(Node node) {
@@ -16,24 +19,23 @@ public class VanillaTokenRingStrategy extends AbstractNodeStrategy {
 
     @Override
     protected void sendNewMessage(Frame frame) {
-        Operator op = node.getOperator();
-        Message mess = op.getMessage();
-        log("Operator "+op.getOperatorId()+" sent message from " + mess.from() + " to " + mess.to());
+        Message mess = node.getOperator().getMessage();
         frame.setMessage(mess);
         frame.setTokenFlag(false);
-        MessagesOverseer.incrementSent();
         node.sendMessage(frame);
     }
 
     @Override
     protected void frameHasReachedSender(Frame frame) {
-        node.sendMessage(Frame.createToken());
+        frame.setMessage(null);
+        frame.setTokenFlag(true);
+        node.sendMessage(frame);
     }
 
     @Override
     protected void frameHasReachedAddressee(Frame frame) {
-        node.saveMessage(frame);
-        frame.setTokenFlag(false);
+        node.saveMessage(frame.copy());
+        frame.setTokenFlag(true);
         node.sendMessage(frame);
     }
 
