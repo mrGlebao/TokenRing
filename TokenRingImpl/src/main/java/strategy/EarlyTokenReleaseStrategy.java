@@ -5,6 +5,11 @@ import entities.dto.Frame;
 
 import static utils.Utils.log;
 
+
+
+/**
+ * Implementation of early token release strategy.
+ */
 public class EarlyTokenReleaseStrategy extends VanillaTokenRingStrategy {
 
     private VanillaTokenRingStrategy strategy;

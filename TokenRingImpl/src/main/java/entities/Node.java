@@ -1,28 +1,39 @@
 package entities;
 
 import entities.dto.Frame;
+import entities.dto.Message;
 import strategy.Strategy;
-import strategy.VanillaTokenRingStrategy;
+import strategy.StrategyType;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+/**
+ * An element of topology.
+ * Node has its own operator, which generates messages, which the node
+ * will try to send when it receives token.
+ * Each node also has its strategy of managing the frames.
+ */
 public class Node extends Thread {
 
     private final int id;
     private final Operator operator;
     private final Queue<Frame> frames;
     private Node next;
-    private List<Frame> myFrames = new ArrayList<>();
+    private List<Message> myMessages = new ArrayList<>();
     private Strategy strategy;
 
     Node(int i) {
+        this(i, StrategyType.DEFAULT);
+    }
+
+    Node(int i, StrategyType type) {
         this.frames = new ConcurrentLinkedQueue<>();
         this.id = i;
         this.operator = new Operator(i);
-        this.strategy = new VanillaTokenRingStrategy(this);
+        this.strategy = StrategyType.getNodeStrategy(type, this);
         MessagesOverseer.register(this);
     }
 
@@ -65,15 +76,12 @@ public class Node extends Thread {
     }
 
     public void saveMessage(Frame frame) {
-        myFrames.add(frame);
+        Message mess = frame.getMessage();
+        myMessages.add(new Message(mess.from(), mess.to(), mess.content()));
     }
 
-    public synchronized int numberOfReceivedFrames() {
-        return myFrames.size();
-    }
-
-    public void printReceivedMessages() {
-        myFrames.stream().map(Frame::getMessage).forEach(System.out::println);
+    synchronized int numberOfReceivedFrames() {
+        return myMessages.size();
     }
 
     @Override

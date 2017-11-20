@@ -10,7 +10,9 @@ import static utils.Utils.log;
 
 /**
  * Abstract class which defines node behavior.
- * Superclass for each node strategy implementation.
+ * Template for each node strategy implementation.
+ * Template for each node strategy implementation.
+ * Created to separate the logic from the data.
  */
 public abstract class AbstractNodeStrategy implements Strategy {
 
@@ -20,7 +22,7 @@ public abstract class AbstractNodeStrategy implements Strategy {
         this.node = node;
     }
 
-    public void operateEmptyToken(Frame frame) {
+    private void operateEmptyToken(Frame frame) {
         Operator op = node.getOperator();
         log("Node " + node.getNodeId() + " received empty token");
         if (op.hasMessageToSend()) {
@@ -36,9 +38,9 @@ public abstract class AbstractNodeStrategy implements Strategy {
     }
 
 
-    public void operateFrame(Frame frame) {
+    private void operateFrame(Frame frame) {
         Message mess = frame.getMessage();
-        log(node.getNodeId() + " received message " + mess );
+        log(node.getNodeId() + " received message " + mess);
         if (mess.from() == node.getNodeId()) {
             frameHasReachedSenderTemplate(frame);
         } else if (mess.to() == node.getNodeId()) {
@@ -68,6 +70,7 @@ public abstract class AbstractNodeStrategy implements Strategy {
         // Send empty token instead
         log("Returned home!");
         frameHasReachedSender(frame);
+        MessagesOverseer.incrementReturned();
     }
 
     protected abstract void frameHasReachedSender(Frame frame);
@@ -75,13 +78,17 @@ public abstract class AbstractNodeStrategy implements Strategy {
     private void frameHasReachedAddresseeTemplate(Frame frame) {
         // Collect message
         log("Went to addressee!");
-        MessagesOverseer.incrementReceived();
         frameHasReachedAddressee(frame);
+        MessagesOverseer.incrementReceived();
     }
 
     protected abstract void frameHasReachedAddressee(Frame frame);
 
-    void sendNewMessageTemplate(Frame frame) {
+    private void sendNewMessageTemplate(Frame frame) {
+        Operator op = node.getOperator();
+        Message mess = op.peekMessage();
+        log("Operator " + op.getOperatorId() + " sent message from " + mess.from() + " to " + mess.to());
+        MessagesOverseer.incrementSent();
         sendNewMessage(frame);
     }
 

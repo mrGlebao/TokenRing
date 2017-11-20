@@ -3,8 +3,7 @@ package strategy;
 import entities.dto.Frame;
 
 /**
- * Interface for behavior strategies.
- *
+ * Interface for various behavior strategies.
  */
 public interface Strategy {
 
