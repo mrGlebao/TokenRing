@@ -63,7 +63,7 @@ public class Node extends Thread {
 
     @Override
     public void run() {
-        while (!isInterrupted()) {
+        while (!isInterrupted() && Topology.topologyIsAlive()) {
             if (!frames.isEmpty()) {
                 Frame frame = frames.poll();
                 strategy.apply(frame);

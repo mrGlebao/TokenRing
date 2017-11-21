@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class Topology {
 
+    private static volatile boolean isAlive;
     private RingConstructor constructor;
     private TopologyOperator operator;
     private List<Node> topology = new ArrayList<>();
@@ -19,6 +20,11 @@ public class Topology {
     private Topology() {
         this.constructor = new RingConstructor();
         this.operator = new TopologyOperator();
+    }
+
+    //ToDo: refactor
+    public static synchronized boolean topologyIsAlive() {
+        return isAlive;
     }
 
     public static Topology createRing(int number) {
@@ -39,6 +45,7 @@ public class Topology {
 
 
     public void start() {
+        isAlive = true;
         for (Node t : topology) {
             t.start();
         }
@@ -46,6 +53,7 @@ public class Topology {
     }
 
     public void stop() {
+        isAlive = false;
         for (Node t : topology) {
             t.interrupt();
         }
