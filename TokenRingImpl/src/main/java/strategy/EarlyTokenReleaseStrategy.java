@@ -26,4 +26,11 @@ public class EarlyTokenReleaseStrategy extends VanillaTokenRingStrategy {
         node.sendMessage(Frame.createToken());
     }
 
+    @Override
+    protected void frameHasReachedSender(Frame frame) {
+        log("Early release: "+frame+ " reached its sender!");
+    }
+
+
+
 }

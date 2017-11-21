@@ -31,7 +31,6 @@
 
 package sbt.bit.zaborovskiy;
 
-import conf.Settings;
 import entities.MessagesOverseer;
 import entities.Topology;
 import org.openjdk.jmh.annotations.*;
@@ -43,41 +42,51 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.concurrent.TimeUnit;
 
-@State(Scope.Thread)
+@State(Scope.Benchmark)
 public class MyBenchmark {
 
     public Topology t;
 
     @Setup(Level.Iteration)
     public void prepareFreshTopology() throws InterruptedException {
-        t = Topology.createRing(Settings.TOPOLOGY_SIZE);
+        t = Topology.createRing(BenchmarkSettings.TOPOLOGY_SIZE);
         t.start();
     }
 
     @TearDown(Level.Iteration)
     public void stopTopology() throws InterruptedException {
         t.stop();
-        System.gc();
     }
 
     @Benchmark
     @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    //@Warmup(iterations = 6)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void oneToken() throws InterruptedException {
-        t.askOperator().sendTokenTo(3);
-        while(Settings.MESSAGES_TO_RECEIVE > MessagesOverseer.numberOfMessagesReceived()) {
+        t.askOperator().sendTokenTo(0);
+        while(BenchmarkSettings.MESSAGES_TO_RECEIVE > MessagesOverseer.numberOfMessagesReceived()) {
         }
     }
 
     @Benchmark
     @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
-    @OutputTimeUnit(TimeUnit.SECONDS)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
     //@Warmup(iterations = 6)
     public void twoTokens() throws InterruptedException {
-        t.askOperator().sendTokenTo(3);
-        t.askOperator().sendTokenTo(Settings.TOPOLOGY_SIZE / 2);
-        while(Settings.MESSAGES_TO_RECEIVE > MessagesOverseer.numberOfMessagesReceived()) {
+        t.askOperator().sendTokenTo(0);
+        t.askOperator().sendTokenTo(BenchmarkSettings.TOPOLOGY_SIZE / 2);
+        while(BenchmarkSettings.MESSAGES_TO_RECEIVE > MessagesOverseer.numberOfMessagesReceived()) {
+        }
+    }
+
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    //@Warmup(iterations = 6)
+    public void threeTokens() throws InterruptedException {
+        t.askOperator().sendTokenTo(0);
+        t.askOperator().sendTokenTo(BenchmarkSettings.TOPOLOGY_SIZE / 2);
+        t.askOperator().sendTokenTo(BenchmarkSettings.TOPOLOGY_SIZE -1 );
+        while(BenchmarkSettings.MESSAGES_TO_RECEIVE > MessagesOverseer.numberOfMessagesReceived()) {
         }
     }
 
@@ -85,15 +94,27 @@ public class MyBenchmark {
 
         Options opt = new OptionsBuilder()
                 .include(MyBenchmark.class.getSimpleName())
-                .warmupIterations(5)
-                .measurementIterations(5)
-                //.threads(20)
-                .forks(1)
+                .warmupIterations(BenchmarkSettings.WARMUP_ITERATIONS)
+                .measurementIterations(BenchmarkSettings.MEASUREMENT_ITERATIONS)
+                .threads(BenchmarkSettings.THREAD_NUMBER)
+                //.forks(1)
                 .resultFormat(ResultFormatType.TEXT)
-                .result("result.txt")
+                .result(name())
                 .build();
 
         new Runner(opt).run();
+    }
+
+    private static String name() {
+        return new StringBuilder()
+                .append("m")
+                .append(BenchmarkSettings.MEASUREMENT_ITERATIONS)
+                .append("w")
+                .append(BenchmarkSettings.WARMUP_ITERATIONS)
+                .append("top")
+                .append(BenchmarkSettings.TOPOLOGY_SIZE)
+                .append(".txt")
+                .toString();
     }
 
 }
