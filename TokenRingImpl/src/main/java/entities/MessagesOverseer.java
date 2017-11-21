@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * This class knows exact number of messages created and received.
+ * This class knows exact number of messages sent? received and returned.
  * It is useful for creating conditions to terminate main thread.
  */
 public class MessagesOverseer {
