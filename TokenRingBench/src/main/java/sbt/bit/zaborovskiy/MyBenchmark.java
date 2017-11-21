@@ -58,36 +58,81 @@ public class MyBenchmark {
         t.stop();
     }
 
-    @Benchmark
-    @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    public void oneToken() throws InterruptedException {
-        t.askOperator().sendTokenTo(0);
+    private void sendTokens(int i) {
+        int temp = 0;
+        while(temp < i) {
+            t.askOperator().sendTokenTo(temp);
+            temp++;
+        }
+    }
+
+    private void sendTokensAndWait(int i) {
+        sendTokens(i);
         while(BenchmarkSettings.MESSAGES_TO_RECEIVE > MessagesOverseer.numberOfMessagesReceived()) {
         }
     }
 
     @Benchmark
     @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void oneToken() throws InterruptedException {
+        sendTokensAndWait(1);
+    }
+
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
     //@Warmup(iterations = 6)
     public void twoTokens() throws InterruptedException {
-        t.askOperator().sendTokenTo(0);
-        t.askOperator().sendTokenTo(BenchmarkSettings.TOPOLOGY_SIZE / 2);
-        while(BenchmarkSettings.MESSAGES_TO_RECEIVE > MessagesOverseer.numberOfMessagesReceived()) {
-        }
+        sendTokensAndWait(2);
     }
 
     @Benchmark
     @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
     //@Warmup(iterations = 6)
     public void threeTokens() throws InterruptedException {
-        t.askOperator().sendTokenTo(0);
-        t.askOperator().sendTokenTo(BenchmarkSettings.TOPOLOGY_SIZE / 2);
-        t.askOperator().sendTokenTo(BenchmarkSettings.TOPOLOGY_SIZE -1 );
-        while(BenchmarkSettings.MESSAGES_TO_RECEIVE > MessagesOverseer.numberOfMessagesReceived()) {
-        }
+        sendTokensAndWait(3);
+    }
+
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    //@Warmup(iterations = 6)
+    public void fourTokens() throws InterruptedException {
+        sendTokensAndWait(4);
+    }
+
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    //@Warmup(iterations = 6)
+    public void fiveTokens() throws InterruptedException {
+        sendTokensAndWait(5);
+    }
+
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    //@Warmup(iterations = 6)
+    public void sixTokens() throws InterruptedException {
+        sendTokensAndWait(6);
+    }
+
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    //@Warmup(iterations = 6)
+    public void sevenTokens() throws InterruptedException {
+        sendTokensAndWait(7);
+    }
+
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    //@Warmup(iterations = 6)
+    public void eightTokens() throws InterruptedException {
+        sendTokensAndWait(8);
     }
 
     public static void main(String[] args) throws RunnerException {
@@ -97,7 +142,7 @@ public class MyBenchmark {
                 .warmupIterations(BenchmarkSettings.WARMUP_ITERATIONS)
                 .measurementIterations(BenchmarkSettings.MEASUREMENT_ITERATIONS)
                 .threads(BenchmarkSettings.THREAD_NUMBER)
-                //.forks(1)
+                .forks(BenchmarkSettings.FORKS)
                 .resultFormat(ResultFormatType.TEXT)
                 .result(name())
                 .build();
@@ -107,12 +152,14 @@ public class MyBenchmark {
 
     private static String name() {
         return new StringBuilder()
+                .append("top")
+                .append(BenchmarkSettings.TOPOLOGY_SIZE)
                 .append("m")
                 .append(BenchmarkSettings.MEASUREMENT_ITERATIONS)
                 .append("w")
                 .append(BenchmarkSettings.WARMUP_ITERATIONS)
-                .append("top")
-                .append(BenchmarkSettings.TOPOLOGY_SIZE)
+                .append("f")
+                .append(BenchmarkSettings.FORKS)
                 .append(".txt")
                 .toString();
     }
