@@ -85,8 +85,8 @@ public class MyBenchmark {
 
         Options opt = new OptionsBuilder()
                 .include(MyBenchmark.class.getSimpleName())
-                .warmupIterations(10)
-                .measurementIterations(10)
+                .warmupIterations(5)
+                .measurementIterations(5)
                 //.threads(20)
                 .forks(1)
                 .resultFormat(ResultFormatType.TEXT)

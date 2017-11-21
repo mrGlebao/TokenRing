@@ -61,7 +61,7 @@ public class Operator extends Thread {
 
     @Override
     public void run() {
-        while (!isInterrupted()) {
+        while (!isInterrupted() && Topology.topologyIsAlive()) {
             if (this.verbose > Math.random()) {
                 log("Operator ID" + nodeId + " GENERATES MESSAGE!");
                 prepareMessage();
