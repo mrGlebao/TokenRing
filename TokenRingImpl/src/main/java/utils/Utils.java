@@ -11,6 +11,10 @@ public class Utils {
         System.out.println(s);
     }
 
+    public static synchronized void log(Object s) {
+        log(s.toString());
+    }
+
     public static synchronized void log(String s) {
         log(s, Settings.SILENT_MODE);
     }

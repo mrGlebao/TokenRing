@@ -31,6 +31,7 @@
 
 package sbt.bit.zaborovskiy;
 
+import conf.Settings;
 import entities.TopologyOverseer;
 import entities.Topology;
 import org.openjdk.jmh.annotations.*;
@@ -49,7 +50,7 @@ public class MyBenchmark {
 
     @Setup(Level.Iteration)
     public void prepareFreshTopology() throws InterruptedException {
-        t = Topology.createRing(BenchmarkSettings.TOPOLOGY_SIZE);
+        t = Topology.createRing(Settings.TOPOLOGY_SIZE);
         t.start();
     }
 
@@ -68,7 +69,7 @@ public class MyBenchmark {
 
     private void sendTokensAndWait(int i) {
         sendTokens(i);
-        while(BenchmarkSettings.MESSAGES_TO_RECEIVE > TopologyOverseer.numberOfMessagesReceived()) {
+        while(Settings.MESSAGES_TO_RECEIVE > TopologyOverseer.numberOfMessagesReceived()) {
         }
     }
 
@@ -153,7 +154,7 @@ public class MyBenchmark {
     private static String name() {
         return new StringBuilder()
                 .append("top")
-                .append(BenchmarkSettings.TOPOLOGY_SIZE)
+                .append(Settings.TOPOLOGY_SIZE)
                 .append("m")
                 .append(BenchmarkSettings.MEASUREMENT_ITERATIONS)
                 .append("w")

@@ -1,6 +1,7 @@
 package strategy.operator;
 
 import conf.Settings;
+import entities.TopologyOverseer;
 import entities.dto.Message;
 
 import static utils.Utils.log;
@@ -12,12 +13,12 @@ public abstract class MessageGenerateStrategy implements OperatorStrategy {
 
     public MessageGenerateStrategy(double verbose, int operatorId) {
         this.operatorId = operatorId;
-        this.verbose = verbose;
+        this.verbose = Settings.RUSH_MODE ? 1 : verbose;
     }
 
     @Override
     public void apply() {
-        if (this.verbose > Math.random()) {
+        if (this.verbose > Math.random()/3) {
             log("Operator ID" + operatorId + " GENERATES MESSAGE!");
             prepareMessage();
         }
@@ -34,6 +35,7 @@ public abstract class MessageGenerateStrategy implements OperatorStrategy {
     private void prepareMessage() {
         int to = generateAddresate();
         String message = "from op" + operatorId + " to op" + to + " message: you are stinky!";
+        TopologyOverseer.incrementGenerated();
         readyToSend(new Message(operatorId, to, message));
     }
 

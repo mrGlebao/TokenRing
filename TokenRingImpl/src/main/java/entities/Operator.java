@@ -33,17 +33,26 @@ public class Operator extends Thread {
         messageGenerationStrategy = new MessageGenerateStrategy(verbose, nodeId) {
             @Override
             protected void readyToSend(Message message) {
-                messagesToSend.add(message);
+                if (messagesToSend.size() < 20) {
+                    messagesToSend.add(message);
+                } else {
+                    TopologyOverseer.incrementOverheaded();
+                }
             }
         };
+
         waitStrategy = new OperatorWaitStrategy(this) {
             @Override
-            public long sleepTime() {
-                return Settings.OPERATOR_SLEEP_DEFAULT;
+            public int sleepTimeMillis() {
+                return Settings.OPERATOR_SLEEP_DEFAULT_MILLIS;
+            }
+
+            @Override
+            public int sleepTimeNanos() {
+                return Settings.OPERATOR_SLEEP_DEFAULT_NANOS;
             }
         };
     }
-
 
     public boolean hasMessageToSend() {
         return !messagesToSend.isEmpty();
