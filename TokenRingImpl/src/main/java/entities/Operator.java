@@ -2,6 +2,9 @@ package entities;
 
 import conf.Settings;
 import entities.dto.Message;
+import strategy.operator.MessageGenerateStrategy;
+import strategy.operator.OperatorStrategy;
+import strategy.operator.OperatorWaitStrategy;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -16,42 +19,41 @@ import static utils.Utils.log;
 public class Operator extends Thread {
 
     private final Queue<Message> messagesToSend;
-    private final double verbose;
+
     private final int nodeId;
+    private final double verbose;
+    private OperatorStrategy messageGenerationStrategy;
 
-    Operator(int nodeId) {
-        this(Settings.VERBOSE_DEFAULT, nodeId);
-    }
+    private OperatorStrategy waitStrategy;
 
-    private Operator(double verbose, int nodeId) {
-        this.messagesToSend = new ConcurrentLinkedQueue<>();
-        this.verbose = verbose;
+    public Operator(double verbose, int nodeId) {
         this.nodeId = nodeId;
+        this.verbose = verbose;
+        this.messagesToSend = new ConcurrentLinkedQueue<>();
+        messageGenerationStrategy = new MessageGenerateStrategy(verbose, nodeId) {
+            @Override
+            protected void readyToSend(Message message) {
+                messagesToSend.add(message);
+            }
+        };
+        waitStrategy = new OperatorWaitStrategy(this) {
+            @Override
+            public long sleepTime() {
+                return Settings.OPERATOR_SLEEP_DEFAULT;
+            }
+        };
     }
 
-    private int generateAddresate() {
-        while (true) {
-            int to_temp = (int) (Settings.TOPOLOGY_SIZE * Math.random());
-            if (to_temp != this.nodeId)
-                return to_temp;
-        }
-    }
 
-    private void prepareMessage() {
-        int to = generateAddresate();
-        String message = "from op" + nodeId + " to op" + to + " message: you are stinky!";
-        messagesToSend.add(new Message(nodeId, to, message));
-    }
-
-    public synchronized boolean hasMessageToSend() {
+    public boolean hasMessageToSend() {
         return !messagesToSend.isEmpty();
     }
 
-    public synchronized Message getMessage() {
+    public Message getMessage() {
         return messagesToSend.poll();
     }
 
-    public synchronized Message peekMessage() {
+    public Message peekMessage() {
         return messagesToSend.peek();
     }
 
@@ -61,16 +63,10 @@ public class Operator extends Thread {
 
     @Override
     public void run() {
-        while (!isInterrupted() && Topology.topologyIsAlive()) {
-            if (this.verbose > Math.random()) {
-                log("Operator ID" + nodeId + " GENERATES MESSAGE!");
-                prepareMessage();
-            }
-            try {
-                Thread.sleep(Settings.OPERATOR_SLEEP_DEFAULT);
-            } catch (InterruptedException e) {
-                this.interrupt();
-            }
+        log("Operator ID" + nodeId + " and verbose " + verbose + " has awakened!");
+        while (!isInterrupted() && TopologyOverseer.topologyIsAlive()) {
+            messageGenerationStrategy.apply();
+            waitStrategy.apply();
         }
     }
 
