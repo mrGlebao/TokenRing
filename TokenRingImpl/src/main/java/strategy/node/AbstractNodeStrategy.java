@@ -1,8 +1,8 @@
-package strategy;
+package strategy.node;
 
-import entities.MessagesOverseer;
 import entities.Node;
 import entities.Operator;
+import entities.TopologyOverseer;
 import entities.dto.Frame;
 import entities.dto.Message;
 
@@ -14,7 +14,7 @@ import static utils.Utils.log;
  * Template for each node strategy implementation.
  * Created to separate the logic from the data.
  */
-public abstract class AbstractNodeStrategy implements Strategy {
+public abstract class AbstractNodeStrategy implements NodeStrategy {
 
     protected final Node node;
 
@@ -70,7 +70,7 @@ public abstract class AbstractNodeStrategy implements Strategy {
         // Send empty token instead
         log("Returned home!");
         frameHasReachedSender(frame);
-        MessagesOverseer.incrementReturned();
+        TopologyOverseer.incrementReturned();
     }
 
     protected abstract void frameHasReachedSender(Frame frame);
@@ -79,7 +79,7 @@ public abstract class AbstractNodeStrategy implements Strategy {
         // Collect message
         log("Went to addressee!");
         frameHasReachedAddressee(frame);
-        MessagesOverseer.incrementReceived();
+        TopologyOverseer.incrementReceived();
     }
 
     protected abstract void frameHasReachedAddressee(Frame frame);
@@ -88,7 +88,7 @@ public abstract class AbstractNodeStrategy implements Strategy {
         Operator op = node.getOperator();
         Message mess = op.peekMessage();
         log("Operator " + op.getOperatorId() + " sent message from " + mess.from() + " to " + mess.to());
-        MessagesOverseer.incrementSent();
+        TopologyOverseer.incrementSent();
         sendNewMessage(frame);
     }
 

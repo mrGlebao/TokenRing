@@ -31,7 +31,7 @@
 
 package sbt.bit.zaborovskiy;
 
-import entities.MessagesOverseer;
+import entities.TopologyOverseer;
 import entities.Topology;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.results.format.ResultFormatType;
@@ -61,14 +61,14 @@ public class MyBenchmark {
     private void sendTokens(int i) {
         int temp = 0;
         while(temp < i) {
-            t.askOperator().sendTokenTo(temp);
+            t.askOperatorTo().sendTokenTo(temp);
             temp++;
         }
     }
 
     private void sendTokensAndWait(int i) {
         sendTokens(i);
-        while(BenchmarkSettings.MESSAGES_TO_RECEIVE > MessagesOverseer.numberOfMessagesReceived()) {
+        while(BenchmarkSettings.MESSAGES_TO_RECEIVE > TopologyOverseer.numberOfMessagesReceived()) {
         }
     }
 

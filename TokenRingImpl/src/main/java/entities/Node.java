@@ -2,12 +2,13 @@ package entities;
 
 import entities.dto.Frame;
 import entities.dto.Message;
-import strategy.Strategy;
-import strategy.StrategyType;
+import strategy.node.NodeStrategy;
+import strategy.node.StrategyType;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -23,7 +24,7 @@ public class Node extends Thread {
     private final Queue<Frame> frames;
     private Node next;
     private List<Message> myMessages = new ArrayList<>();
-    private Strategy strategy;
+    private NodeStrategy nodeStrategy;
 
     Node(int i) {
         this(i, StrategyType.DEFAULT);
@@ -32,9 +33,10 @@ public class Node extends Thread {
     Node(int i, StrategyType type) {
         this.frames = new ConcurrentLinkedQueue<>();
         this.id = i;
-        this.operator = new Operator(i);
-        this.strategy = StrategyType.getNodeStrategy(type, this);
-        MessagesOverseer.register(this);
+        double verbosity = (new Random().nextInt(98) + 1) / 100.0;
+        this.operator = new Operator(verbosity, i);
+        this.nodeStrategy = StrategyType.getNodeStrategy(type, this);
+        TopologyOverseer.register(this);
     }
 
     @Override
@@ -63,10 +65,10 @@ public class Node extends Thread {
 
     @Override
     public void run() {
-        while (!isInterrupted() && Topology.topologyIsAlive()) {
+        while (!isInterrupted() && TopologyOverseer.topologyIsAlive()) {
             if (!frames.isEmpty()) {
                 Frame frame = frames.poll();
-                strategy.apply(frame);
+                nodeStrategy.apply(frame);
             }
         }
     }

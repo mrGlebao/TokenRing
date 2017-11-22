@@ -1,12 +1,8 @@
-package strategy;
+package strategy.node;
 
-import entities.MessagesOverseer;
 import entities.Node;
-import entities.Operator;
 import entities.dto.Frame;
 import entities.dto.Message;
-
-import static utils.Utils.log;
 
 /**
  * Default token ring strategy implementation, according to wikipedia.

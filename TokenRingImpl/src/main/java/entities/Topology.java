@@ -1,18 +1,18 @@
 package entities;
 
 import entities.dto.Frame;
-import strategy.StrategyType;
-import throwables.UnexpectedAddresseeException;
+import strategy.node.StrategyType;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static utils.Utils.log;
 
 /**
  * Class to represent node topology, i.e. TokenRing
  */
 public class Topology {
 
-    private static volatile boolean isAlive;
     private RingConstructor constructor;
     private TopologyOperator operator;
     private List<Node> topology = new ArrayList<>();
@@ -22,17 +22,8 @@ public class Topology {
         this.operator = new TopologyOperator();
     }
 
-    //ToDo: refactor
-    public static synchronized boolean topologyIsAlive() {
-        return isAlive;
-    }
-
     public static Topology createRing(int number) {
-        Topology top = new Topology();
-        for (int i = 0; i < number; i++) {
-            top.askRingConstructor().append(new Node(i));
-        }
-        return top;
+        return createRing(number, StrategyType.DEFAULT);
     }
 
     public static Topology createRing(int number, StrategyType strategy) {
@@ -45,7 +36,7 @@ public class Topology {
 
 
     public void start() {
-        isAlive = true;
+        TopologyOverseer.setTopologyIsAliveFlag(true);
         for (Node t : topology) {
             t.start();
         }
@@ -53,18 +44,17 @@ public class Topology {
     }
 
     public void stop() {
-        isAlive = false;
+        TopologyOverseer.setTopologyIsAliveFlag(false);
         for (Node t : topology) {
             t.interrupt();
         }
     }
 
-    // ToDo: public if we will need to append nodes in runtime.
     private RingConstructor askRingConstructor() {
         return constructor;
     }
 
-    public TopologyOperator askOperator() {
+    public TopologyOperator askOperatorTo() {
         return operator;
     }
 
@@ -96,12 +86,8 @@ public class Topology {
 
         public void sendTokenTo(int i) {
             if (i > topology.size() - 1) {
-                try {
-                    throw new UnexpectedAddresseeException(i);
-                } catch (UnexpectedAddresseeException e) {
-                    e.printStackTrace();
-                    return;
-                }
+                log(" Topology has less than " + i + " nodes!");
+                return;
             }
             topology.get(i).sendMessage(Frame.createToken());
         }

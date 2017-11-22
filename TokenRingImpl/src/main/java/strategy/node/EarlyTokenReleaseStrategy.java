@@ -1,10 +1,9 @@
-package strategy;
+package strategy.node;
 
 import entities.Node;
 import entities.dto.Frame;
 
 import static utils.Utils.log;
-
 
 
 /**
@@ -28,9 +27,8 @@ public class EarlyTokenReleaseStrategy extends VanillaTokenRingStrategy {
 
     @Override
     protected void frameHasReachedSender(Frame frame) {
-        log("Early release: "+frame+ " reached its sender!");
+        log("Early release: " + frame + " reached its sender!");
     }
-
 
 
 }
