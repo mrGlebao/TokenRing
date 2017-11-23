@@ -36,7 +36,9 @@ public abstract class MessageGenerateStrategy implements OperatorStrategy {
         int to = generateAddresate();
         String message = "from op" + operatorId + " to op" + to + " message: you are stinky!";
         TopologyOverseer.incrementGenerated();
-        readyToSend(new Message(operatorId, to, message));
+        Message mess = new Message(operatorId, to, message);
+        mess.setGenerated();
+        readyToSend(mess);
     }
 
     protected abstract void readyToSend(Message message);

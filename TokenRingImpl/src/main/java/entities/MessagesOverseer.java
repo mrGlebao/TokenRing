@@ -45,11 +45,4 @@ public class MessagesOverseer {
         registeredNodes.add(node);
     }
 
-    public static synchronized void printAllReceivedMessages() {
-         //registeredNodes.stream().forEach(Node::printReceivedMessages);
-        System.out.println(registeredNodes.stream().mapToInt(Node::numberOfReceivedFrames).sum() == Settings.MESSAGES_TO_RECEIVE);
-        System.out.println(registeredNodes.stream().mapToInt(Node::numberOfReceivedFrames).sum());
-    }
-
-
 }

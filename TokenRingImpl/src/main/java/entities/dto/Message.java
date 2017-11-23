@@ -11,6 +11,12 @@ public class Message {
     private final int to;
     private final String content;
 
+    private long generated;
+    private long sent;
+    private long received;
+    private long returned;
+
+
     public Message(int from, int to, String content) {
         this.from = from;
         this.to = to;
@@ -33,4 +39,35 @@ public class Message {
         return content;
     }
 
+    public long getSent() {
+        return sent;
+    }
+
+    public void setSent() {
+        this.sent = System.nanoTime();
+    }
+
+    public long getReceived() {
+        return received;
+    }
+
+    public void setReceived() {
+        this.received = System.nanoTime();
+    }
+
+    public long getReturned() {
+        return returned;
+    }
+
+    public void setReturned() {
+        this.returned = System.nanoTime();
+    }
+
+    public long getGenerated() {
+        return generated;
+    }
+
+    public void setGenerated() {
+        this.generated = System.nanoTime();
+    }
 }

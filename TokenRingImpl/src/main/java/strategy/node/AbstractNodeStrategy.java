@@ -69,6 +69,7 @@ public abstract class AbstractNodeStrategy implements NodeStrategy {
     private void frameHasReachedSenderTemplate(Frame frame) {
         // Send empty token instead
         log("Returned home!");
+        frame.getMessage().setReturned();
         frameHasReachedSender(frame);
         TopologyOverseer.incrementReturned();
     }
@@ -78,6 +79,7 @@ public abstract class AbstractNodeStrategy implements NodeStrategy {
     private void frameHasReachedAddresseeTemplate(Frame frame) {
         // Collect message
         log("Went to addressee!");
+        frame.getMessage().setReceived();
         frameHasReachedAddressee(frame);
         TopologyOverseer.incrementReceived();
     }
@@ -89,6 +91,7 @@ public abstract class AbstractNodeStrategy implements NodeStrategy {
         Message mess = op.peekMessage();
         log("Operator " + op.getOperatorId() + " sent message from " + mess.from() + " to " + mess.to());
         TopologyOverseer.incrementSent();
+        mess.setSent();
         sendNewMessage(frame);
     }
 
