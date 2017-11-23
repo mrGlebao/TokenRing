@@ -35,14 +35,6 @@ public class Frame {
         this.message = message;
     }
 
-    public Frame copy() {
-        Frame f = new Frame(this.isToken);
-        Message m = this.getMessage();
-        f.setMessage(new Message(m.from(), m.to(), m.content()));
-        return f;
-    }
-
-
     @Override
     public String toString() {
         return "Frame<" + message + ", isToken = " + isToken + ">";

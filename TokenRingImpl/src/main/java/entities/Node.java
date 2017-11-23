@@ -23,7 +23,7 @@ public class Node extends Thread {
     private final Operator operator;
     private final Queue<Frame> frames;
     private Node next;
-    private List<Message> myMessages = new ArrayList<>();
+    private List<Message> myMessages;
     private NodeStrategy nodeStrategy;
 
     Node(int i) {
@@ -33,6 +33,7 @@ public class Node extends Thread {
     Node(int i, StrategyType type) {
         this.frames = new ConcurrentLinkedQueue<>();
         this.id = i;
+        this.myMessages = new ArrayList<>();
         double verbosity = (new Random().nextInt(98) + 1) / 100.0;
         this.operator = new Operator(verbosity, i);
         this.nodeStrategy = StrategyType.getNodeStrategy(type, this);
@@ -81,11 +82,15 @@ public class Node extends Thread {
 
     public void saveMessage(Frame frame) {
         Message mess = frame.getMessage();
-        myMessages.add(new Message(mess.from(), mess.to(), mess.content()));
+        myMessages.add(mess);
     }
 
-    synchronized int numberOfReceivedFrames() {
-        return myMessages.size();
+    public synchronized List<Message> getMyMessages() {
+        return this.myMessages;
+    }
+
+    public synchronized Queue<Frame> getFrames() {
+        return this.frames;
     }
 
     @Override

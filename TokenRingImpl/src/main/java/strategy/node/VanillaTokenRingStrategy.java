@@ -30,7 +30,7 @@ public class VanillaTokenRingStrategy extends AbstractNodeStrategy {
 
     @Override
     protected void frameHasReachedAddressee(Frame frame) {
-        node.saveMessage(frame.copy());
+        node.saveMessage(frame);
         frame.setTokenFlag(true);
         node.sendMessage(frame);
     }

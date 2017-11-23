@@ -11,16 +11,13 @@ public class Message {
     private final int to;
     private final String content;
 
-    private long generated;
-    private long sent;
-    private long received;
-    private long returned;
-
+    private Timestamps timestamps;
 
     public Message(int from, int to, String content) {
         this.from = from;
         this.to = to;
         this.content = content;
+        this.timestamps = new Timestamps();
     }
 
     public String toString() {
@@ -39,35 +36,57 @@ public class Message {
         return content;
     }
 
-    public long getSent() {
-        return sent;
+    public Timestamps getTimestamps() {
+        return this.timestamps;
     }
 
     public void setSent() {
-        this.sent = System.nanoTime();
-    }
-
-    public long getReceived() {
-        return received;
+        this.timestamps.sent = System.currentTimeMillis();
     }
 
     public void setReceived() {
-        this.received = System.nanoTime();
-    }
-
-    public long getReturned() {
-        return returned;
+        this.timestamps.received = System.nanoTime();
     }
 
     public void setReturned() {
-        this.returned = System.nanoTime();
-    }
-
-    public long getGenerated() {
-        return generated;
+        this.timestamps.returned = System.nanoTime();
     }
 
     public void setGenerated() {
-        this.generated = System.nanoTime();
+        this.timestamps.generated = System.nanoTime();
+    }
+
+    public class Timestamps {
+        private long generated;
+        private long sent;
+        private long received;
+        private long returned;
+
+        public long getSent() {
+            return this.sent;
+        }
+
+        public long getReceived() {
+            return this.received;
+        }
+
+        public long getReturned() {
+            return this.returned;
+        }
+
+        public long getGenerated() {
+            return this.generated;
+        }
+
+        @Override
+        public String toString() {
+            return "<Stamp\n"+
+                    "Generated: "+getGenerated()+"\n"+
+                    "Sent: "+getSent()+"\n"+
+                    "Received: "+getReceived()+"\n"+
+                    "Returned: "+getReturned()+"\n>" +
+                    "\n";
+        }
+
     }
 }

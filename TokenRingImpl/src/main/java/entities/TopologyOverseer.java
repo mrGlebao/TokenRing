@@ -1,6 +1,7 @@
 package entities;
 
 import conf.Settings;
+import entities.dto.Message;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,11 +75,12 @@ public class TopologyOverseer {
         registeredNodes.add(node);
     }
 
-    public static synchronized void printAllReceivedMessages() {
+    public static synchronized void printAllReceivedStamps() {
         //registeredNodes.stream().forEach(Node::printReceivedMessages);
-        System.out.println(registeredNodes.stream().mapToInt(Node::numberOfReceivedFrames).sum() == Settings.MESSAGES_TO_RECEIVE);
-        System.out.println(registeredNodes.stream().mapToInt(Node::numberOfReceivedFrames).sum());
-        System.out.println(numberOfMessagesGenerated());
-        System.out.println(numberOfMessagesOverheaded());
+//        System.out.println(registeredNodes.stream().mapToInt(Node::numberOfReceivedFrames).sum() == Settings.MESSAGES_TO_RECEIVE);
+//        System.out.println(registeredNodes.stream().mapToInt(Node::numberOfReceivedFrames).sum());
+//        System.out.println(numberOfMessagesGenerated());
+//        System.out.println(numberOfMessagesOverheaded());
+        registeredNodes.stream().map(Node::getMyMessages).forEach(elem -> elem.stream().map(Message::getTimestamps).forEach(System.out::println));
     }
 }

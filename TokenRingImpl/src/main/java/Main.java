@@ -11,6 +11,6 @@ public class Main {
         while (Settings.MESSAGES_TO_RECEIVE > TopologyOverseer.numberOfMessagesReceived()) {
         }
         top.stop();
-        TopologyOverseer.printAllReceivedMessages();
+        TopologyOverseer.printAllReceivedStamps();
     }
 }
