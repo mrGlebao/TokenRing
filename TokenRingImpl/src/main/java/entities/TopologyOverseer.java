@@ -76,9 +76,9 @@ public class TopologyOverseer {
 
     public static synchronized void printAllReceivedMessages() {
         //registeredNodes.stream().forEach(Node::printReceivedMessages);
-        log(registeredNodes.stream().mapToInt(Node::numberOfReceivedFrames).sum() == Settings.MESSAGES_TO_RECEIVE);
-        log(registeredNodes.stream().mapToInt(Node::numberOfReceivedFrames).sum());
-        log(numberOfMessagesGenerated());
-        log(numberOfMessagesOverheaded());
+        System.out.println(registeredNodes.stream().mapToInt(Node::numberOfReceivedFrames).sum() == Settings.MESSAGES_TO_RECEIVE);
+        System.out.println(registeredNodes.stream().mapToInt(Node::numberOfReceivedFrames).sum());
+        System.out.println(numberOfMessagesGenerated());
+        System.out.println(numberOfMessagesOverheaded());
     }
 }

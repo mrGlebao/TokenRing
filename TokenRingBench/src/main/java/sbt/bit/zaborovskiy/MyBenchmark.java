@@ -48,9 +48,16 @@ public class MyBenchmark {
 
     public Topology t;
 
+    @Param({"5", "6"})
+    public static int nodesNum;
+
+    @Param({"1", "2"})
+    public static int tokensSend;
+
     @Setup(Level.Iteration)
     public void prepareFreshTopology() throws InterruptedException {
-        t = Topology.createRing(Settings.TOPOLOGY_SIZE);
+        t = Topology.createRing(nodesNum);
+        sendTokens(tokensSend);
         t.start();
     }
 
@@ -76,68 +83,21 @@ public class MyBenchmark {
     @Benchmark
     @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    public void oneToken() throws InterruptedException {
-        sendTokensAndWait(1);
+    public void bench() throws InterruptedException {
+        while(Settings.MESSAGES_TO_RECEIVE > TopologyOverseer.numberOfMessagesReceived()) {
+        }
+//        Thread.sleep(2_000);
     }
 
-    @Benchmark
-    @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    //@Warmup(iterations = 6)
-    public void twoTokens() throws InterruptedException {
-        sendTokensAndWait(2);
-    }
-
-    @Benchmark
-    @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    //@Warmup(iterations = 6)
-    public void threeTokens() throws InterruptedException {
-        sendTokensAndWait(3);
-    }
-
-    @Benchmark
-    @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    //@Warmup(iterations = 6)
-    public void fourTokens() throws InterruptedException {
-        sendTokensAndWait(4);
-    }
-
-    @Benchmark
-    @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    //@Warmup(iterations = 6)
-    public void fiveTokens() throws InterruptedException {
-        sendTokensAndWait(5);
-    }
-
-    @Benchmark
-    @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    //@Warmup(iterations = 6)
-    public void sixTokens() throws InterruptedException {
-        sendTokensAndWait(6);
-    }
-
-    @Benchmark
-    @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    //@Warmup(iterations = 6)
-    public void sevenTokens() throws InterruptedException {
-        sendTokensAndWait(7);
-    }
-
-    @Benchmark
-    @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    //@Warmup(iterations = 6)
-    public void eightTokens() throws InterruptedException {
-        sendTokensAndWait(8);
-    }
 
     public static void main(String[] args) throws RunnerException {
 
+        System.out.println("Topology: "+Settings.TOPOLOGY_SIZE);
+        System.out.println("Messages: "+Settings.MESSAGES_TO_RECEIVE);
+        System.out.println("Millis: "+Settings.OPERATOR_SLEEP_DEFAULT_MILLIS);
+        System.out.println("Nanos: "+Settings.OPERATOR_SLEEP_DEFAULT_NANOS);
+        System.out.println("Rush: "+Settings.RUSH_MODE);
+        System.out.println("Early release: "+Settings.EARLY_RELEASE);
         Options opt = new OptionsBuilder()
                 .include(MyBenchmark.class.getSimpleName())
                 .warmupIterations(BenchmarkSettings.WARMUP_ITERATIONS)
@@ -145,7 +105,8 @@ public class MyBenchmark {
                 .threads(BenchmarkSettings.THREAD_NUMBER)
                 .forks(BenchmarkSettings.FORKS)
                 .resultFormat(ResultFormatType.TEXT)
-                .result(name())
+                //.output("OUT"+name())
+                //.result("RES"+name())
                 .build();
 
         new Runner(opt).run();
@@ -154,13 +115,17 @@ public class MyBenchmark {
     private static String name() {
         return new StringBuilder()
                 .append("top")
-                .append(Settings.TOPOLOGY_SIZE)
+                .append(nodesNum)
                 .append("m")
                 .append(BenchmarkSettings.MEASUREMENT_ITERATIONS)
                 .append("w")
                 .append(BenchmarkSettings.WARMUP_ITERATIONS)
                 .append("f")
                 .append(BenchmarkSettings.FORKS)
+                .append("er")
+                .append(Settings.EARLY_RELEASE)
+                .append("tok")
+                .append(tokensSend)
                 .append(".txt")
                 .toString();
     }

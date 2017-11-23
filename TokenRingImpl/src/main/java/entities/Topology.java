@@ -1,5 +1,6 @@
 package entities;
 
+import conf.Settings;
 import entities.dto.Frame;
 import strategy.node.StrategyType;
 
@@ -23,7 +24,7 @@ public class Topology {
     }
 
     public static Topology createRing(int number) {
-        return createRing(number, StrategyType.DEFAULT);
+        return createRing(number, Settings.EARLY_RELEASE ? StrategyType.EARLY_RELEASE : StrategyType.DEFAULT);
     }
 
     public static Topology createRing(int number, StrategyType strategy) {
