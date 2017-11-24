@@ -4,6 +4,14 @@ import entities.TopologyOverseer;
 
 public class Main {
 
+    private void sendTokens(Topology t, int i) {
+        int temp = 0;
+        while(temp < i) {
+            t.askOperatorTo().sendTokenTo(temp);
+            temp++;
+        }
+    }
+
     public static void main(String[] args) throws InterruptedException {
         Topology top = Topology.createRing(Settings.TOPOLOGY_SIZE);
         top.start();

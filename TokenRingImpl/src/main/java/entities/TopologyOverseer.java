@@ -2,10 +2,13 @@ package entities;
 
 import conf.Settings;
 import entities.dto.Message;
+import timestamp_writer.TimestampWriter;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static utils.Utils.log;
 
@@ -81,6 +84,13 @@ public class TopologyOverseer {
 //        System.out.println(registeredNodes.stream().mapToInt(Node::numberOfReceivedFrames).sum());
 //        System.out.println(numberOfMessagesGenerated());
 //        System.out.println(numberOfMessagesOverheaded());
-        registeredNodes.stream().map(Node::getMyMessages).forEach(elem -> elem.stream().map(Message::getTimestamps).forEach(System.out::println));
+//        List<Message.Timestamps> list = registeredNodes.stream().map(Node::getMyMessages).map(elem -> elem.stream().map(Message::getTimestamps).collect(Collectors.toList())).collect(Collectors.toList());
+        List<Message.Timestamps> stampsReceived = new ArrayList<>();
+        for(Node n : registeredNodes) {
+            List<Message.Timestamps> stampsTemp = n.getMyMessages().stream().map(Message::getTimestamps).collect(Collectors.toList());
+            stampsReceived.addAll(stampsTemp);
+        }
+        TimestampWriter writer = new TimestampWriter();
+        writer.write(stampsReceived);
     }
 }
