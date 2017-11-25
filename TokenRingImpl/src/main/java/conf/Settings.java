@@ -8,7 +8,7 @@ public class Settings {
     public static final int OPERATOR_SLEEP_DEFAULT_NANOS = 10; //between 1 & 5 millis - ok, 2 edge case
     public static final int TOKENS_SENT = 3;
     public static final boolean SILENT_MODE = false;
-    public static final boolean RUSH_MODE = false;
+    public static final boolean RUSH_MODE = true;
     public static final boolean EARLY_RELEASE = false;
 
 }

@@ -41,7 +41,7 @@ public class Message {
     }
 
     public void setSent() {
-        this.timestamps.sent = System.currentTimeMillis();
+        this.timestamps.sent = System.nanoTime();
     }
 
     public void setReceived() {
