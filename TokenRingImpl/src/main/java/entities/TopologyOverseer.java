@@ -1,6 +1,5 @@
 package entities;
 
-import conf.Settings;
 import entities.dto.Message;
 import timestamp_writer.TimestampWriter;
 
@@ -8,9 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static utils.Utils.log;
 
 /**
  * This class knows exact number of messages sent? received and returned.
@@ -79,14 +75,8 @@ public class TopologyOverseer {
     }
 
     public static synchronized void printAllReceivedStamps() {
-        //registeredNodes.stream().forEach(Node::printReceivedMessages);
-//        System.out.println(registeredNodes.stream().mapToInt(Node::numberOfReceivedFrames).sum() == Settings.MESSAGES_TO_RECEIVE);
-//        System.out.println(registeredNodes.stream().mapToInt(Node::numberOfReceivedFrames).sum());
-//        System.out.println(numberOfMessagesGenerated());
-//        System.out.println(numberOfMessagesOverheaded());
-//        List<Message.Timestamps> list = registeredNodes.stream().map(Node::getMyMessages).map(elem -> elem.stream().map(Message::getTimestamps).collect(Collectors.toList())).collect(Collectors.toList());
         List<Message.Timestamps> stampsReceived = new ArrayList<>();
-        for(Node n : registeredNodes) {
+        for (Node n : registeredNodes) {
             List<Message.Timestamps> stampsTemp = n.getMyMessages().stream().map(Message::getTimestamps).collect(Collectors.toList());
             stampsReceived.addAll(stampsTemp);
         }
