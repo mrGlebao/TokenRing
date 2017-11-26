@@ -14,13 +14,23 @@ import java.util.stream.Collectors;
  */
 public class TopologyOverseer {
 
-    private static final List<Node> registeredNodes = Collections.synchronizedList(new ArrayList<>());
+    private static List<Node> registeredNodes = Collections.synchronizedList(new ArrayList<>());
     private static boolean topologyIsAlive = false;
     private static int messagesReceivedNumber = 0;
     private static int messagesSentNumber = 0;
     private static int messagesReturnedNumber = 0;
     private static int messagesGeneratedNumber = 0;
     private static int messagesOverheadedNumber = 0;
+
+    public static void clear() {
+        registeredNodes.clear();
+        topologyIsAlive = false;
+        messagesReceivedNumber = 0;
+        messagesSentNumber = 0;
+        messagesGeneratedNumber = 0;
+        messagesOverheadedNumber = 0;
+        messagesGeneratedNumber = 0;
+    }
 
     public static synchronized int numberOfMessagesReceived() {
         return messagesReceivedNumber;

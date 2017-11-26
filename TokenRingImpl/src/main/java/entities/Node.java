@@ -49,8 +49,8 @@ public class Node extends Thread {
     @Override
     public synchronized void interrupt() {
         if(!TopologyOverseer.topologyIsAlive()) {
-            super.interrupt();
             operator.interrupt();
+            super.interrupt();
         }
     }
 

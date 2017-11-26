@@ -34,7 +34,7 @@ public class TimestampWriter {
     }
 
     private String formatDate(Date date) {
-        return "" + date.getMonth() + date.getDay() + date.getHours() + date.getMinutes();
+        return "" + date.getMonth() + date.getDay() + date.getHours() + date.getMinutes()+date.getSeconds();
     }
 
     public String generateFileName() {
