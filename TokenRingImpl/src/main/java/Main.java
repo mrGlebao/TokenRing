@@ -13,7 +13,7 @@ public class Main {
     }
 
     private static void goGoGo(int maxTopologySize, int tokensNum) {
-        for(int i = 3; i < maxTopologySize; i+=2) {
+        for(int i = 3; i < maxTopologySize; i+=1) {
             if(tokensNum > i) {
                 System.out.println("Continue");
                 continue;
@@ -37,8 +37,8 @@ public class Main {
 
 
     public static void main(String[] args) throws InterruptedException {
-        for (int i = 1; i < 30; i++) {
-            goGoGo(30, i);
-        }
+//        for (int i = 1; i < 30; i++) {
+            goGoGo(30, 1);
+//        }
     }
 }
