@@ -8,6 +8,8 @@ import static utils.Utils.log;
 
 /**
  * Implementation of early token release strategy.
+ *
+ * @See VanillaTokenRingStrategy
  */
 public class EarlyTokenReleaseStrategy extends VanillaTokenRingStrategy {
 

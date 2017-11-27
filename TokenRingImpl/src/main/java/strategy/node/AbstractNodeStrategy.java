@@ -11,8 +11,9 @@ import static utils.Utils.log;
 /**
  * Abstract class which defines node behavior.
  * Template for each node strategy implementation.
- * Template for each node strategy implementation.
- * Created to separate the logic from the data.
+ * Created to separate the abstract node behavior logic from its concrete implementations.
+ *
+ * @See NodeStrategy
  */
 public abstract class AbstractNodeStrategy implements NodeStrategy {
 

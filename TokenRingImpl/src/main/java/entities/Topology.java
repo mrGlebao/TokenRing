@@ -92,11 +92,9 @@ public class Topology {
             }
             topology.get(i).sendMessage(Frame.createToken());
         }
-
-        public void sendTokenToRandom() {
-            sendTokenTo((int) (Math.random() * (topology.size() - 1)));
-        }
-
+    }
+    public int size() {
+        return topology.size();
     }
 
 }

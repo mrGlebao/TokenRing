@@ -2,6 +2,9 @@ package utils;
 
 import conf.Settings;
 
+/**
+ * Class to contain various utility methods.
+ */
 public class Utils {
 
     public static synchronized void log(String s, boolean isSilent) {
@@ -9,10 +12,6 @@ public class Utils {
             return;
         }
         System.out.println(s);
-    }
-
-    public static synchronized void log(Object s) {
-        log(s.toString());
     }
 
     public static synchronized void log(String s) {

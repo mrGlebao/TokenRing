@@ -4,6 +4,8 @@ package entities.dto;
  * Classic DTO
  * Represents a frame.
  * Due to protocol 1 thread operates 1 frame at a time, so there is no need for explicit synchronization.
+ *
+ * @See {@link Message}
  */
 public class Frame {
 

@@ -1,14 +1,13 @@
 package strategy.operator;
 
-import conf.Settings;
-
-import static utils.Utils.log;
-
 /**
  * Interface for various operator behavior strategies.
+ * Created to separate operator behavior logic from data.
+ *
+ * @See Operator
  */
 public interface OperatorStrategy {
 
-    public void apply();
+    void apply();
 
 }

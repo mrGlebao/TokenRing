@@ -23,6 +23,7 @@ public class Settings {
 
     /**
      * Minimal topology size of measurement series.
+     * Leads to exception if value is less than 2.
      * Only used if Settings.SERIES_MODE == true
      */
     public static final int TOPOLOGY_SIZE_MIN = 2;
@@ -31,13 +32,13 @@ public class Settings {
      * Maximal topology size of measurement series.
      * Only used if Settings.SERIES_MODE == true
      */
-    public static final int TOPOLOGY_SIZE_MAX = 25;
+    public static final int TOPOLOGY_SIZE_MAX = 2;
 
     /**
      * Step to change topology size.
      * Only used if Settings.SERIES_MODE == true
      */
-    public static final int TOPOLOGY_SIZE_STEP = 2;
+    public static final int TOPOLOGY_SIZE_STEP = 1;
 
     /**
      * Actual size of topology.
@@ -49,7 +50,7 @@ public class Settings {
      * Actual number of tokens to sent.
      * Only used if Settings.SERIES_MODE == false
      */
-    public static final int TOKENS_SENT = 1;
+    public static final int TOKENS_SENT = 4;
 
     /**
      * True if want to turn in early token release strategy,

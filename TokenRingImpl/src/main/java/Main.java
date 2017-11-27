@@ -1,44 +1,76 @@
 import conf.Settings;
 import entities.Topology;
 import entities.TopologyOverseer;
+import entities.dto.Message;
+import throwables.TopologySizeException;
+import timestamp_writer.TimestampWriter;
+
+import java.util.List;
 
 public class Main {
 
-    private static void sendTokens(Topology t, int i) {
+    private static void sendTokens(Topology t, int i) throws TopologySizeException {
         int temp = 0;
-        while(temp < i) {
+        if (t.size() < i) {
+            throw new TopologySizeException("Topology size is " + t.size() + ", but try to sent " + i + " empty tokens!");
+
+        }
+        while (temp < i) {
             t.askOperatorTo().sendTokenTo(temp);
             temp++;
         }
     }
 
-    private static void goGoGo(int maxTopologySize, int tokensNum) {
-        for(int i = 3; i < maxTopologySize; i+=1) {
-            if(tokensNum > i) {
-                System.out.println("Continue");
-                continue;
-            }
-            System.out.println("Top "+i);
-            System.out.println("Tok "+tokensNum);
+    private static void mainIteration(int topologySize, int tokensNum) {
+        Topology top = Topology.createRing(topologySize);
+        try {
+            sendTokens(top, tokensNum);
+        } catch (TopologySizeException e) {
+            e.printStackTrace();
+            return;
+        }
+        top.start();
+        System.out.println("Topology size: " + topologySize);
+        System.out.println("Tokens number: " + tokensNum);
+        while (Settings.MESSAGES_TO_RECEIVE > TopologyOverseer.numberOfMessagesReceived()) {
+        }
+        top.stop();
+        List<Message.Timestamps> stamps = TopologyOverseer.getAllReceivedStamps();
+        TopologyOverseer.clear();
+        TimestampWriter.write(topologySize, tokensNum, stamps);
+    }
 
-            Settings.TOPOLOGY_SIZE = i;
-            Settings.TOKENS_SENT = tokensNum;
-
-            Topology top = Topology.createRing(Settings.TOPOLOGY_SIZE);
-            top.start();
-            sendTokens(top, Settings.TOKENS_SENT );
-            while (Settings.MESSAGES_TO_RECEIVE > TopologyOverseer.numberOfMessagesReceived()) {
+    private static void goGoGo() throws TopologySizeException {
+        if (Settings.TOPOLOGY_SIZE_MIN < 2) {
+            throw new TopologySizeException("Minimal topology size is too small: " + Settings.TOPOLOGY_SIZE_MIN + ". Must be at least 2");
+        }
+        if (Settings.TOPOLOGY_SIZE_MIN > Settings.TOPOLOGY_SIZE_MAX) {
+            throw new TopologySizeException("Minimal topology size " + Settings.TOPOLOGY_SIZE_MIN + " is bigger " +
+                    "than maximal topology size " + Settings.TOPOLOGY_SIZE_MAX);
+        }
+        if (Settings.TOPOLOGY_SIZE_MIN == Settings.TOPOLOGY_SIZE_MAX) {
+            System.out.println("Minimal topology size " + Settings.TOPOLOGY_SIZE_MIN + " is equal to maximal" +
+                    " topology size. Topology size is fixed during measurements.");
+        }
+        if (Settings.SERIES_MODE) {
+            // Topology number loop
+            for (int i = Settings.TOPOLOGY_SIZE_MIN; i <= Settings.TOPOLOGY_SIZE_MAX; i += Settings.TOPOLOGY_SIZE_STEP) {
+                //Tokens number loop
+                for (int j = 1; j <= i; j += Settings.TOKENS_SENT_STEP) {
+                    mainIteration(i, j);
+                }
             }
-            top.stop();
-            TopologyOverseer.printAllReceivedStamps();
-            TopologyOverseer.clear();
+        } else {
+            mainIteration(Settings.TOPOLOGY_SIZE, Settings.TOKENS_SENT);
         }
     }
 
 
-    public static void main(String[] args) throws InterruptedException {
-//        for (int i = 1; i < 30; i++) {
-            goGoGo(30, 1);
-//        }
+    public static void main(String[] args) {
+        try {
+            goGoGo();
+        } catch (TopologySizeException e) {
+            e.printStackTrace();
+        }
     }
 }

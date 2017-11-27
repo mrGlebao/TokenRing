@@ -1,9 +1,11 @@
 package entities.dto;
 
 /**
- * Classic DTO
- * Represents a frame.
+ * Class represents a Message with timestamps of generation time, send time, receive time and return to sender time.
+ * Uses System.nanoTime() to generate timestamps.
  * Due to protocol 1 frame can contain 1 message at a time, so there is no need for explicit synchronization.
+ *
+ * @See System#nanoTime(), {@link Frame}
  */
 public class Message {
 

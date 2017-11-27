@@ -1,7 +1,6 @@
 package entities;
 
 import entities.dto.Message;
-import timestamp_writer.TimestampWriter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,22 +8,30 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * This class knows exact number of messages sent? received and returned.
+ * This class knows exact number of messages sent, received and returned.
  * It is useful for creating conditions to terminate main thread.
+ * Also this class can collect all received by nodes messages.
+ *
+ * @See TimestampWriter
  */
 public class TopologyOverseer {
 
     private static List<Node> registeredNodes = Collections.synchronizedList(new ArrayList<>());
     private static boolean topologyIsAlive = false;
+    private static int actualTopologySize = 0;
     private static int messagesReceivedNumber = 0;
     private static int messagesSentNumber = 0;
     private static int messagesReturnedNumber = 0;
     private static int messagesGeneratedNumber = 0;
     private static int messagesOverheadedNumber = 0;
 
+    /**
+     * Call this method after all timestamps were collected! Otherwise data will be lost.
+     */
     public static void clear() {
         registeredNodes.clear();
         topologyIsAlive = false;
+        actualTopologySize = 0;
         messagesReceivedNumber = 0;
         messagesSentNumber = 0;
         messagesGeneratedNumber = 0;
@@ -80,17 +87,26 @@ public class TopologyOverseer {
         messagesReturnedNumber = messagesReturnedNumber + 1;
     }
 
+    public static int getActualTopologySize() {
+        return registeredNodes.size();
+    }
+
+
+    /**
+     * Registers node to Overseer
+     *
+     * @param node - node to register.
+     */
     static synchronized void register(Node node) {
         registeredNodes.add(node);
     }
 
-    public static synchronized void printAllReceivedStamps() {
+    public static synchronized List<Message.Timestamps> getAllReceivedStamps() {
         List<Message.Timestamps> stampsReceived = new ArrayList<>();
         for (Node n : registeredNodes) {
             List<Message.Timestamps> stampsTemp = n.getMyMessages().stream().map(Message::getTimestamps).collect(Collectors.toList());
             stampsReceived.addAll(stampsTemp);
         }
-        TimestampWriter writer = new TimestampWriter();
-        writer.write(stampsReceived);
+        return stampsReceived;
     }
 }

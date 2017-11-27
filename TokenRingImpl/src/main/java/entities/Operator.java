@@ -15,6 +15,8 @@ import static utils.Utils.log;
  * A class which represents the operator - an entity,
  * which generates messages with random frequency dependent on its verbosity.
  * Each node has its own operator.
+ *
+ * @See {@link Node}
  */
 public class Operator extends Thread {
 

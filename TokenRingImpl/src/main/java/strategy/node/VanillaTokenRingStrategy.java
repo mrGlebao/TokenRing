@@ -6,6 +6,8 @@ import entities.dto.Message;
 
 /**
  * Default token ring strategy implementation, according to wikipedia.
+ *
+ * @See AbstractNodeStrategy
  */
 public class VanillaTokenRingStrategy extends AbstractNodeStrategy {
 

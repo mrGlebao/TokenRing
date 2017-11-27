@@ -6,6 +6,11 @@ import entities.dto.Message;
 
 import static utils.Utils.log;
 
+/**
+ * Operator strategy for message generation.
+ *
+ * @See Operator
+ */
 public abstract class MessageGenerateStrategy implements OperatorStrategy {
 
     private final double verbose;
@@ -18,7 +23,8 @@ public abstract class MessageGenerateStrategy implements OperatorStrategy {
 
     @Override
     public void apply() {
-        if (this.verbose > Math.random()/3) {
+        if (this.verbose > Math.random()) {
+            // Won a dice throw
             log("Operator ID" + operatorId + " GENERATES MESSAGE!");
             prepareMessage();
         }
@@ -26,7 +32,7 @@ public abstract class MessageGenerateStrategy implements OperatorStrategy {
 
     private int generateAddresate() {
         while (true) {
-            int to_temp = (int) ((Settings.TOPOLOGY_SIZE - 1) * Math.random());
+            int to_temp = (int) ((TopologyOverseer.getActualTopologySize() - 1) * Math.random());
             if (to_temp != this.operatorId)
                 return to_temp;
         }
@@ -41,5 +47,8 @@ public abstract class MessageGenerateStrategy implements OperatorStrategy {
         readyToSend(mess);
     }
 
+    /**
+     * What to do when message was successfully generated.
+     */
     protected abstract void readyToSend(Message message);
 }

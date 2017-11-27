@@ -9,18 +9,23 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Class, which generates a dataset from timestamp list, collected by topology overseer.
+ *
+ * @See TopologyOverseer
+ */
 public class TimestampWriter {
 
-    private String generateRow(Message.Timestamps stamps) {
+    private static String generateRow(Message.Timestamps stamps) {
         return stamps.getGenerated() + " "
                 + stamps.getSent() + " "
                 + stamps.getReceived() + " "
                 + stamps.getReturned() + " ";
     }
 
-    public void write(List<Message.Timestamps> stampsList) {
+    public static void write(int topSize, int tokens, List<Message.Timestamps> stampsList) {
         System.out.println("Start writing!");
-        try (PrintWriter writer = new PrintWriter(generateFileName(), "UTF-8")) {
+        try (PrintWriter writer = new PrintWriter(generateFileName(topSize, tokens), "UTF-8")) {
             writer.println("created sent received returned");
             for (Message.Timestamps stamps : stampsList) {
                 writer.println(generateRow(stamps));
@@ -33,18 +38,18 @@ public class TimestampWriter {
         System.out.println("Success!");
     }
 
-    private String formatDate(Date date) {
-        return "" + date.getMonth() + date.getDay() + date.getHours() + date.getMinutes()+date.getSeconds();
+    private static String formatDate(Date date) {
+        return "" + date.getMonth() + date.getDay() + date.getHours() + date.getMinutes() + date.getSeconds();
     }
 
-    public String generateFileName() {
+    public static String generateFileName(int topSize, int tokens) {
         return new StringBuilder()
                 .append("D:\\Git\\TokenRing\\research\\data\\")
                 .append(formatDate(new Date()))
                 .append("top")
-                .append(Settings.TOPOLOGY_SIZE)
+                .append(topSize)
                 .append("tok")
-                .append(Settings.TOKENS_SENT)
+                .append(tokens)
                 .append("mess")
                 .append(Settings.MESSAGES_TO_RECEIVE)
                 .append("rush")

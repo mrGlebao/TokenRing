@@ -4,6 +4,11 @@ import conf.Settings;
 import entities.Operator;
 import entities.TopologyOverseer;
 
+/**
+ * Operator strategy for waiting
+ *
+ * @See Operator
+ */
 public abstract class OperatorWaitStrategy implements OperatorStrategy {
 
     private final Operator op;

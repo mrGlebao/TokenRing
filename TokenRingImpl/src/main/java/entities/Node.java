@@ -16,6 +16,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * Node has its own operator, which generates messages, which the node
  * will try to send when it receives token.
  * Each node also has its strategy of managing the frames.
+ *
+ * @See {@link Operator}, {@link NodeStrategy}
  */
 public class Node extends Thread {
 
@@ -36,7 +38,7 @@ public class Node extends Thread {
         this.myMessages = new ArrayList<>();
         double verbosity = (new Random().nextInt(98) + 1) / 100.0;
         this.operator = new Operator(verbosity, i);
-        this.nodeStrategy = StrategyType.getNodeStrategy(type, this);
+        this.nodeStrategy = type.getNodeStrategy(this);
         TopologyOverseer.register(this);
     }
 
@@ -48,7 +50,7 @@ public class Node extends Thread {
 
     @Override
     public synchronized void interrupt() {
-        if(!TopologyOverseer.topologyIsAlive()) {
+        if (!TopologyOverseer.topologyIsAlive()) {
             operator.interrupt();
             super.interrupt();
         }
