@@ -40,10 +40,7 @@ public class Main {
         TimestampWriter.write(topologySize, tokensNum, stamps);
     }
 
-    private static void goGoGo() throws TopologySizeException {
-        if (Settings.TOPOLOGY_SIZE_MIN < 2) {
-            throw new TopologySizeException("Minimal topology size is too small: " + Settings.TOPOLOGY_SIZE_MIN + ". Must be at least 2");
-        }
+    private static void doManyIterations() throws TopologySizeException {
         if (Settings.TOPOLOGY_SIZE_MIN > Settings.TOPOLOGY_SIZE_MAX) {
             throw new TopologySizeException("Minimal topology size " + Settings.TOPOLOGY_SIZE_MIN + " is bigger " +
                     "than maximal topology size " + Settings.TOPOLOGY_SIZE_MAX);
@@ -52,25 +49,28 @@ public class Main {
             System.out.println("Minimal topology size " + Settings.TOPOLOGY_SIZE_MIN + " is equal to maximal" +
                     " topology size. Topology size is fixed during measurements.");
         }
-        if (Settings.SERIES_MODE) {
-            // Topology number loop
-            for (int i = Settings.TOPOLOGY_SIZE_MIN; i <= Settings.TOPOLOGY_SIZE_MAX; i += Settings.TOPOLOGY_SIZE_STEP) {
-                //Tokens number loop
-                for (int j = 1; j <= i; j += Settings.TOKENS_SENT_STEP) {
-                    mainIteration(i, j);
-                }
+        // Topology number loop
+        for (int i = Settings.TOPOLOGY_SIZE_MIN; i <= Settings.TOPOLOGY_SIZE_MAX; i += Settings.TOPOLOGY_SIZE_STEP) {
+            //Tokens number loop
+            for (int j = 1; j <= i; j += Settings.TOKENS_SENT_STEP) {
+                mainIteration(i, j);
             }
+        }
+    }
+
+    private static void doStuff() throws TopologySizeException {
+        if (Settings.SERIES_MODE) {
+            doManyIterations();
         } else {
+            if (Settings.TOPOLOGY_SIZE < 2) {
+                throw new TopologySizeException("Topology size is too small: " + Settings.TOPOLOGY_SIZE_MIN + ". Must be at least 2");
+            }
             mainIteration(Settings.TOPOLOGY_SIZE, Settings.TOKENS_SENT);
         }
     }
 
 
-    public static void main(String[] args) {
-        try {
-            goGoGo();
-        } catch (TopologySizeException e) {
-            e.printStackTrace();
-        }
+    public static void main(String[] args) throws TopologySizeException {
+        doStuff();
     }
 }

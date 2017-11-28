@@ -1,5 +1,8 @@
 package conf;
 
+/**
+ * Class to contain app settings.
+ */
 public class Settings {
 
     /**
@@ -13,7 +16,7 @@ public class Settings {
      * Settings.TOKENS_SENT_STEP
      *
      */
-    public static final boolean SERIES_MODE = true;
+    public static final boolean SERIES_MODE = false;
 
     /**
      * Step to change tokens number.
@@ -44,25 +47,25 @@ public class Settings {
      * Actual size of topology.
      * Only used if Settings.SERIES_MODE == false
      */
-    public static final int TOPOLOGY_SIZE = 8;
+    public static final int TOPOLOGY_SIZE = 2;
 
     /**
      * Actual number of tokens to sent.
      * Only used if Settings.SERIES_MODE == false
      */
-    public static final int TOKENS_SENT = 4;
+    public static final int TOKENS_SENT = 1;
 
     /**
      * True if want to turn in early token release strategy,
      * false for default strategy
      */
-    public static final boolean EARLY_RELEASE = true;
+    public static final boolean EARLY_RELEASE = false;
 
     /**
      * when nodes receive Settings.MESSAGES_TO_RECEIVE messages in total, the iteration of measurment stops.
      * @See TopologyOverseer
      */
-    public static final int MESSAGES_TO_RECEIVE = 1000;
+    public static final int MESSAGES_TO_RECEIVE = 10;
 
     /**
      * True if want to generate messages non-stop by node operators (high network loading)
@@ -89,7 +92,7 @@ public class Settings {
      * False otherwise
      * @See Utils#log()
      */
-    public static final boolean SILENT_MODE = true;
+    public static final boolean SILENT_MODE = false;
 
 
 }

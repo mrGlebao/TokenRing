@@ -32,7 +32,7 @@ public abstract class MessageGenerateStrategy implements OperatorStrategy {
 
     private int generateAddresate() {
         while (true) {
-            int to_temp = (int) ((TopologyOverseer.getActualTopologySize() - 1) * Math.random());
+            int to_temp = (int) ((TopologyOverseer.getActualTopologySize()) * Math.random());
             if (to_temp != this.operatorId)
                 return to_temp;
         }

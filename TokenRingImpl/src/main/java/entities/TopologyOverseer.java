@@ -18,7 +18,6 @@ public class TopologyOverseer {
 
     private static List<Node> registeredNodes = Collections.synchronizedList(new ArrayList<>());
     private static boolean topologyIsAlive = false;
-    private static int actualTopologySize = 0;
     private static int messagesReceivedNumber = 0;
     private static int messagesSentNumber = 0;
     private static int messagesReturnedNumber = 0;
@@ -31,7 +30,6 @@ public class TopologyOverseer {
     public static void clear() {
         registeredNodes.clear();
         topologyIsAlive = false;
-        actualTopologySize = 0;
         messagesReceivedNumber = 0;
         messagesSentNumber = 0;
         messagesGeneratedNumber = 0;
