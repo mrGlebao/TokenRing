@@ -14,9 +14,8 @@ public class Settings {
      * Settings.TOPOLOGY_SIZE_MAX
      * Settings.TOPOLOGY_SIZE_STEP
      * Settings.TOKENS_SENT_STEP
-     *
      */
-    public static final boolean SERIES_MODE = false;
+    public static final boolean SERIES_MODE = true;
 
     /**
      * Step to change tokens number.
@@ -35,7 +34,7 @@ public class Settings {
      * Maximal topology size of measurement series.
      * Only used if Settings.SERIES_MODE == true
      */
-    public static final int TOPOLOGY_SIZE_MAX = 2;
+    public static final int TOPOLOGY_SIZE_MAX = 30;
 
     /**
      * Step to change topology size.
@@ -65,13 +64,13 @@ public class Settings {
      * when nodes receive Settings.MESSAGES_TO_RECEIVE messages in total, the iteration of measurment stops.
      * @See TopologyOverseer
      */
-    public static final int MESSAGES_TO_RECEIVE = 10;
+    public static final int MESSAGES_TO_RECEIVE = 1000;
 
     /**
      * True if want to generate messages non-stop by node operators (high network loading)
      * False otherwise (low network loading)
      */
-    public static final boolean RUSH_MODE = true;
+    public static final boolean RUSH_MODE = false;
 
     /**
      * Tune this parameter to make node operators generate messages more/less often
@@ -92,7 +91,7 @@ public class Settings {
      * False otherwise
      * @See Utils#log()
      */
-    public static final boolean SILENT_MODE = false;
+    public static final boolean SILENT_MODE = true;
 
 
 }
