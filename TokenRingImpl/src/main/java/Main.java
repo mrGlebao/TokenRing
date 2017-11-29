@@ -59,6 +59,8 @@ public class Main {
     }
 
     private static void doStuff() throws TopologySizeException {
+        System.out.println("Rush mode: "+Settings.RUSH_MODE);
+        System.out.println("Early release: "+Settings.EARLY_RELEASE);
         if (Settings.SERIES_MODE) {
             doManyIterations();
         } else {

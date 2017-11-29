@@ -18,7 +18,7 @@ public class TopologyTest {
 
     @Before
     public void before() {
-        size = appropriateSize(Settings.TOPOLOGY_SIZE);
+        size = 2;
         top = Topology.createRing(size);
         try {
             Field f = Topology.class.getDeclaredField("topology");
@@ -27,15 +27,6 @@ public class TopologyTest {
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
-    }
-
-    // ToDo: what if maxSize < threshold ?
-    private int appropriateSize(int maxSize) {
-        int size = 0;
-        while (size < 1) {
-            size = (int) (Math.random() * maxSize);
-        }
-        return size;
     }
 
     private Node[] collectIterator(Iterable<Node> iterable) {
@@ -61,7 +52,7 @@ public class TopologyTest {
     public void CheckSequenceInTheMiddle() throws NoSuchFieldException, IllegalAccessException {
         int number = 0;
         Node nodesAsArray[] = collectIterator(topInside);
-        for (int i = 0; i < nodesAsArray.length - 1; i++) {
+        for (int i = 0; i < nodesAsArray.length-1; i++) {
             Node previous = nodesAsArray[i];
             Node next = nodesAsArray[i + 1];
             Field fieldNext = Node.class.getDeclaredField("next");
